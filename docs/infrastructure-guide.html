@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOCHomeLab — Infrastructure Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════════════════════════
+   SOCHomeLab — Infrastructure Guide
+   Design system matched to index.html v1.0.4
+   ════════════════════════════════════════════════════════════ */
+
+:root {
+  --void:        #060709;
+  --base:        #0a0c10;
+  --surface:     #0f1117;
+  --surface-2:   #141720;
+  --border:      rgba(255,255,255,0.08);
+  --border-hard: rgba(255,255,255,0.14);
+  --orange:      #f97316;
+  --orange-dim:  rgba(249,115,22,0.1);
+  --cyan:        #06b6d4;
+  --cyan-dim:    rgba(6,182,212,0.1);
+  --green:       #22c55e;
+  --green-dim:   rgba(34,197,94,0.1);
+  --yellow:      #eab308;
+  --yellow-dim:  rgba(234,179,8,0.1);
+  --red:         #ef4444;
+  --white:       #f1f3f5;
+  --muted:       #8b929e;
+  --dim:         #4b5563;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body:    'Inter', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--void);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  letter-spacing: -0.01em;
+  overflow-x: hidden;
+}
+
+/* DOT-GRID */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+/* SCANLINES */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ══════════════════════════
+   STATUS BAR
+   ══════════════════════════ */
+.status-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  background: var(--void);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+}
+
+.status-bar-left, .status-bar-right {
+  display: flex; align-items: center; gap: 2rem;
+}
+
+.status-item { display: flex; align-items: center; gap: 0.4rem; }
+.status-item .key { color: var(--dim); }
+.status-item .val { color: var(--cyan); }
+.status-item.active .val { color: var(--green); }
+
+.status-pulse {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: blink 1.8s steps(1) infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
+
+/* ══════════════════════════
+   NAV
+   ══════════════════════════ */
+nav {
+  position: fixed;
+  top: 28px; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 52px;
+  background: rgba(6,7,9,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--white);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.nav-logo-bracket { color: var(--orange); }
+.nav-logo-version {
+  font-size: 9px;
+  color: var(--dim);
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  margin-left: 4px;
+  letter-spacing: 0.05em;
+}
+
+.nav-links { display: flex; gap: 0; list-style: none; }
+
+.nav-links a {
+  color: var(--dim);
+  text-decoration: none;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0 1.1rem;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid var(--border);
+  transition: color 0.15s, background 0.15s;
+}
+
+.nav-links li:first-child a { border-left: 1px solid var(--border); }
+.nav-links a:hover { color: var(--white); background: rgba(255,255,255,0.03); }
+.nav-links a.active { color: var(--orange); border-bottom: 1px solid var(--orange); }
+
+.nav-cta {
+  background: var(--orange) !important;
+  color: var(--void) !important;
+  font-weight: 600 !important;
+  border: none !important;
+  padding: 0 1.25rem !important;
+}
+.nav-cta:hover { background: #fb923c !important; color: var(--void) !important; }
+
+/* ══════════════════════════
+   PAGE LAYOUT
+   ══════════════════════════ */
+.page-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 110px 2rem 6rem;
+}
+
+/* ══════════════════════════
+   DOC HEADER
+   ══════════════════════════ */
+.doc-header {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  margin-bottom: 2px;
+}
+
+.doc-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.doc-header-bar .doc-id { color: var(--orange); }
+.doc-header-bar .doc-meta { color: var(--dim); }
+
+.doc-header-body { padding: 2rem 2rem 1.75rem; }
+
+.doc-classify {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.doc-classify-tag {
+  background: var(--orange);
+  color: var(--void);
+  font-weight: 600;
+  padding: 2px 7px;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+}
+
+.doc-header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  margin-bottom: 1rem;
+}
+
+.doc-header h1 .accent { color: var(--orange); }
+
+.doc-subtitle {
+  color: var(--muted);
+  font-size: 0.92rem;
+  max-width: 560px;
+  line-height: 1.8;
+  letter-spacing: -0.005em;
+  margin-bottom: 1.25rem;
+}
+
+.doc-author {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+  text-transform: uppercase;
+}
+
+.author-pulse {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: blink 2s steps(1) infinite;
+}
+
+.doc-tag-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.doc-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  padding: 3px 9px;
+  background: rgba(255,255,255,0.04);
+  color: var(--dim);
+  border: 1px solid var(--border);
+  text-transform: uppercase;
+}
+
+.doc-tag.orange { background: var(--orange-dim); color: var(--orange); border-color: rgba(249,115,22,0.25); }
+.doc-tag.cyan   { background: var(--cyan-dim);   color: var(--cyan);   border-color: rgba(6,182,212,0.25); }
+.doc-tag.green  { background: var(--green-dim);  color: var(--green);  border-color: rgba(34,197,94,0.25); }
+
+/* ══════════════════════════
+   TABLE OF CONTENTS
+   ══════════════════════════ */
+.toc {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  margin-bottom: 2px;
+}
+
+.toc-header {
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  padding: 0;
+}
+
+.toc a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 10px 16px;
+  text-decoration: none;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  transition: color 0.15s, background 0.15s;
+}
+
+.toc a:nth-child(even) { border-right: none; }
+.toc a:nth-last-child(-n+2) { border-bottom: none; }
+
+.toc a:hover { color: var(--orange); background: rgba(249,115,22,0.04); }
+
+.toc-num {
+  color: var(--orange);
+  min-width: 20px;
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+/* ══════════════════════════
+   SECTION STRUCTURE
+   ══════════════════════════ */
+.guide-section {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  margin-bottom: 2px;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.guide-section.visible { opacity: 1; transform: translateY(0); }
+
+.section-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.section-num {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: rgba(249,115,22,0.3);
+  line-height: 1;
+  padding: 0.6rem 1rem;
+  border-right: 1px solid var(--border);
+  min-width: 64px;
+  text-align: center;
+}
+
+.section-title-block { padding: 0.6rem 1rem; flex: 1; }
+
+.section-protocol {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--orange);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.section-title-block h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--white);
+}
+
+.section-body {
+  padding: 1.5rem 1.75rem;
+}
+
+.section-body p {
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.75;
+  margin-bottom: 0.85rem;
+  letter-spacing: -0.005em;
+}
+
+.section-body p:last-child { margin-bottom: 0; }
+
+/* ── H3 sub-headings ── */
+.section-body h3 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin: 1.5rem 0 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-body h3::before {
+  content: '//';
+  color: var(--orange);
+  opacity: 0.5;
+}
+
+.section-body h3:first-child { margin-top: 0; }
+
+/* ══════════════════════════
+   CODE BLOCKS
+   ══════════════════════════ */
+.code-block {
+  border: 1px solid var(--border);
+  background: var(--void);
+  margin: 0.85rem 0;
+  position: relative;
+}
+
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.code-filepath {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.code-filepath .filename { color: var(--orange); }
+
+.copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: all 0.1s;
+  user-select: none;
+}
+
+.copy-btn:hover  { border-color: var(--orange); color: var(--orange); }
+.copy-btn:active { transform: translateY(1px); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); }
+
+pre {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--muted);
+  padding: 1.1rem 1.25rem;
+  overflow-x: auto;
+}
+
+pre .comment { color: var(--dim); }
+pre .cmd     { color: var(--cyan); }
+pre .key     { color: var(--orange); }
+
+code {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  background: rgba(255,255,255,0.05);
+  color: var(--cyan);
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+}
+
+/* ══════════════════════════
+   CALLOUTS
+   ══════════════════════════ */
+.callout {
+  display: flex;
+  gap: 0.85rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid;
+  border-left-width: 3px;
+  margin: 0.85rem 0;
+  font-size: 13px;
+  line-height: 1.7;
+  letter-spacing: -0.005em;
+}
+
+.callout-warn {
+  background: var(--yellow-dim);
+  border-color: rgba(234,179,8,0.2);
+  border-left-color: var(--yellow);
+  color: #fde68a;
+}
+
+.callout-info {
+  background: var(--cyan-dim);
+  border-color: rgba(6,182,212,0.2);
+  border-left-color: var(--cyan);
+  color: #a5f3fc;
+}
+
+.callout-tip {
+  background: var(--green-dim);
+  border-color: rgba(34,197,94,0.2);
+  border-left-color: var(--green);
+  color: #bbf7d0;
+}
+
+.callout-icon { flex-shrink: 0; margin-top: 1px; }
+
+/* ══════════════════════════
+   TABLES
+   ══════════════════════════ */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  margin: 0.85rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.data-table th {
+  background: var(--surface-2);
+  padding: 9px 14px;
+  text-align: left;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+}
+
+.data-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--muted);
+  vertical-align: top;
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+
+.data-table td:first-child {
+  color: var(--dim);
+  width: 160px;
+  background: rgba(255,255,255,0.015);
+  white-space: nowrap;
+}
+
+.data-table .val-orange { color: var(--orange); }
+.data-table .val-cyan   { color: var(--cyan); }
+.data-table .val-green  { color: var(--green); }
+
+/* Port table specific */
+.port-num { color: var(--orange) !important; font-weight: 600; }
+.port-service { color: var(--white) !important; }
+
+/* Status table */
+.status-ok { color: var(--green) !important; }
+.status-ok::before { content: '● '; }
+.status-warn { color: var(--yellow) !important; }
+.status-warn::before { content: '◐ '; }
+
+/* ══════════════════════════
+   LESSON CARDS
+   ══════════════════════════ */
+.lessons { display: flex; flex-direction: column; gap: 2px; }
+
+.lesson {
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--orange);
+  background: var(--surface);
+  padding: 1.1rem 1.4rem;
+  transition: background 0.15s, border-color 0.15s;
+  position: relative;
+}
+
+.lesson:hover {
+  background: var(--surface-2);
+  border-left-color: var(--orange);
+}
+
+.lesson-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lesson p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.005em;
+}
+
+.lesson p:last-child { margin-bottom: 0; }
+
+/* ══════════════════════════
+   FOOTER
+   ══════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  margin-top: 2px;
+}
+
+.footer-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-logo {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--dim);
+  text-decoration: none;
+}
+
+.footer-logo .bracket { color: var(--orange); }
+
+.footer-links { display: flex; gap: 0; list-style: none; }
+
+.footer-links a {
+  color: var(--dim);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  border-right: 1px solid var(--border);
+  transition: color 0.15s;
+}
+
+.footer-links li:first-child a { border-left: 1px solid var(--border); }
+.footer-links a:hover { color: var(--cyan); }
+
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 0.06em;
+}
+
+/* ══════════════════════════
+   RESPONSIVE
+   ══════════════════════════ */
+@media (max-width: 768px) {
+  .status-bar { display: none; }
+  nav { top: 0; }
+  .page-wrap { padding: 70px 1.25rem 4rem; }
+  .toc-grid { grid-template-columns: 1fr; }
+  .toc a { border-right: none; }
+  .toc a:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
+  .toc a:last-child { border-bottom: none; }
+  .footer-inner { flex-direction: column; gap: 1rem; text-align: center; }
+  .section-num { display: none; }
+  .doc-header h1 { font-size: 2.8rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <div class="status-bar-left">
+    <div class="status-item active">
+      <span class="status-pulse"></span>
+      <span class="key">NODE_STATUS:</span>
+      <span class="val">ACTIVE</span>
+    </div>
+    <div class="status-item">
+      <span class="key">DOC:</span>
+      <span class="val">INFRA_GUIDE // DOC-001</span>
+    </div>
+    <div class="status-item">
+      <span class="key">PLATFORM:</span>
+      <span class="val">FEDORA_42 // WAZUH_4.9</span>
+    </div>
+  </div>
+  <div class="status-bar-right">
+    <div class="status-item active">
+      <span class="key">SECTIONS:</span>
+      <span class="val">13</span>
+    </div>
+    <div class="status-item">
+      <span class="key">SYS_TIME:</span>
+      <span class="val" id="sys-time">--:--:--</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-bracket">[</span>
+    <span>SOC_HOME_LAB</span>
+    <span class="nav-logo-bracket">]</span>
+    <span class="nav-logo-version">v1.0.4</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#stack">Stack</a></li>
+    <li><a href="index.html#architecture">Architecture</a></li>
+    <li><a href="index.html#team">Team</a></li>
+    <li><a href="index.html#guides">Guides</a></li>
+    <li><a href="infrastructure-guide.html" class="active">Infrastructure</a></li>
+    <li><a href="index.html#dashboard">Dashboard</a></li>
+    <li><a href="https://github.com/kat2120/SOCHomeLab" target="_blank" class="nav-cta">GitHub →</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- DOC HEADER -->
+  <div class="doc-header guide-section visible">
+    <div class="doc-header-bar">
+      <span class="doc-id">[ DOC-001 // INFRASTRUCTURE_GUIDE ]</span>
+      <span class="doc-meta">Author: Kathlyn · v1.0.4</span>
+    </div>
+    <div class="doc-header-body">
+      <div class="doc-classify">
+        <span class="doc-classify-tag">FIELD MANUAL</span>
+        <span style="color:var(--border-hard)">|</span>
+        COMPLETE SETUP WALKTHROUGH
+      </div>
+      <h1>Infrastructure<br><span class="accent">Guide</span></h1>
+      <p class="doc-subtitle">Complete step-by-step walkthrough of the SOCHomeLab server setup — from bare Fedora 42 to a fully operational Wazuh stack with SSL, Filebeat, and OpenSearch.</p>
+      <div class="doc-author">
+        <span class="author-pulse"></span>
+        Written by Kathlyn · Infrastructure Engineer
+      </div>
+      <div class="doc-tag-row">
+        <span class="doc-tag orange">Fedora 42</span>
+        <span class="doc-tag cyan">Wazuh 4.9</span>
+        <span class="doc-tag cyan">OpenSearch</span>
+        <span class="doc-tag green">Filebeat</span>
+        <span class="doc-tag">SSH Hardening</span>
+        <span class="doc-tag">firewalld</span>
+        <span class="doc-tag">SSL/PKI</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc guide-section">
+    <div class="toc-header">
+      <span>[ TABLE OF CONTENTS ]</span>
+      <span style="color:var(--dim);font-size:9px;">13 SECTIONS</span>
+    </div>
+    <div class="toc-grid">
+      <a href="#env"><span class="toc-num">01</span> Environment</a>
+      <a href="#setup"><span class="toc-num">02</span> Fedora Server Setup</a>
+      <a href="#network"><span class="toc-num">03</span> Network Configuration</a>
+      <a href="#users"><span class="toc-num">04</span> User Accounts</a>
+      <a href="#ssh"><span class="toc-num">05</span> SSH Hardening</a>
+      <a href="#firewall"><span class="toc-num">06</span> Firewall Configuration</a>
+      <a href="#updates"><span class="toc-num">07</span> Automatic Updates</a>
+      <a href="#wazuh"><span class="toc-num">08</span> Wazuh HIDS Installation</a>
+      <a href="#certs"><span class="toc-num">09</span> SSL Certificate Setup</a>
+      <a href="#services"><span class="toc-num">10</span> Wazuh Services</a>
+      <a href="#filebeat"><span class="toc-num">11</span> Filebeat Setup</a>
+      <a href="#health"><span class="toc-num">12</span> Health Check</a>
+      <a href="#lessons"><span class="toc-num">13</span> Lessons Learned</a>
+    </div>
+  </div>
+
+  <!-- 01. ENVIRONMENT -->
+  <div class="guide-section" id="env">
+    <div class="section-bar">
+      <div class="section-num">01</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: HARDWARE // HOST ]</div>
+        <h2>Environment</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <table class="data-table">
+        <tr><td>Hardware</td><td>Intel NUC mini PC</td></tr>
+        <tr><td>OS</td><td class="val-cyan">Fedora 42</td></tr>
+        <tr><td>Server IP</td><td><code>192.168.1.33</code> — DHCP reservation on router</td></tr>
+        <tr><td>Gateway</td><td><code>192.168.1.254</code></td></tr>
+        <tr><td>Interface</td><td><code>wlp2s0</code> (WiFi)</td></tr>
+        <tr><td>RAM</td><td>15 GB</td></tr>
+        <tr><td>Workstation</td><td>ThinkPad T14 — Fedora 42 — <code>192.168.1.185</code></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 02. FEDORA SETUP -->
+  <div class="guide-section" id="setup">
+    <div class="section-bar">
+      <div class="section-num">02</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: BASE_OS // INITIAL_CONFIG ]</div>
+        <h2>Fedora Server Setup</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <h3>Check Fedora version</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>cat /etc/fedora-release
+uname -r</pre>
+      </div>
+
+      <h3>Update everything first</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo dnf update -y && sudo dnf upgrade -y</pre>
+      </div>
+      <div class="callout callout-warn">
+        <span class="callout-icon">⚠</span>
+        <span>Wait for this to fully complete before moving on to any other step.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03. NETWORK -->
+  <div class="guide-section" id="network">
+    <div class="section-bar">
+      <div class="section-num">03</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: NETWORK // DHCP_RESERVATION ]</div>
+        <h2>Network Configuration</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>Rather than configuring a static IP on the OS side, we used a <strong>DHCP reservation</strong> on the router. The router always assigns <code>192.168.1.33</code> to the NUC based on its MAC address. This is cleaner than OS-level static IP config.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>ip a
+ping google.com -c 4</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04. USERS -->
+  <div class="guide-section" id="users">
+    <div class="section-bar">
+      <div class="section-num">04</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: IAM // USER_ADMIN ]</div>
+        <h2>User Accounts</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="comment"># Create account with sudo access</span>
+sudo useradd -m -G wheel katato
+sudo passwd katato
+
+<span class="comment"># Verify wheel group membership</span>
+getent group wheel</pre>
+      </div>
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <span>For a production setup, create separate accounts per team member. Shared accounts mean no individual accountability in audit logs.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05. SSH -->
+  <div class="guide-section" id="ssh">
+    <div class="section-bar">
+      <div class="section-num">05</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: REMOTE_ACCESS // SSH_HARDENING ]</div>
+        <h2>SSH Hardening</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <h3>Install and enable SSH server</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo dnf install -y openssh-server
+sudo systemctl enable --now sshd
+sudo systemctl status sshd</pre>
+      </div>
+
+      <h3>Generate SSH keys (on your client device, not the server)</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash // client</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>ssh-keygen -t ed25519 -C "katato"
+ssh-copy-id -p 7389 katato@192.168.1.33</pre>
+      </div>
+
+      <h3>Test passwordless login</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash // client</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>ssh -p 7389 katato@192.168.1.33</pre>
+      </div>
+
+      <h3>Harden sshd_config</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath">/etc/ssh/<span class="filename">sshd_config</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>Port 7389
+PermitRootLogin no
+PasswordAuthentication no
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+MaxAuthTries 3</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span> — apply config</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo systemctl restart sshd</pre>
+      </div>
+      <div class="callout callout-warn">
+        <span class="callout-icon">⚠</span>
+        <span>Keep your current session open and test in a new terminal before closing. If you get locked out, fix the config from the local terminal.</span>
+      </div>
+
+      <h3>SSH client shortcut (on your client device)</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath">~/.ssh/<span class="filename">config</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>Host intelnuc
+    HostName 192.168.1.33
+    User katato
+    Port 7389</pre>
+      </div>
+      <p>Now just type <code>ssh intelnuc</code> to connect from anywhere.</p>
+    </div>
+  </div>
+
+  <!-- 06. FIREWALL -->
+  <div class="guide-section" id="firewall">
+    <div class="section-bar">
+      <div class="section-num">06</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: PERIMETER // FIREWALLD ]</div>
+        <h2>Firewall Configuration</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <table class="data-table">
+        <tr>
+          <th>Port</th><th>Service</th><th>Purpose</th>
+        </tr>
+        <tr><td class="port-num">7389</td><td class="port-service">SSH</td><td>Remote access — non-default port for security</td></tr>
+        <tr><td class="port-num">443</td><td class="port-service">HTTPS</td><td>Wazuh dashboard</td></tr>
+        <tr><td class="port-num">1514</td><td class="port-service">TCP</td><td>Wazuh agent communication</td></tr>
+        <tr><td class="port-num">1515</td><td class="port-service">TCP</td><td>Wazuh agent registration</td></tr>
+        <tr><td class="port-num">9200</td><td class="port-service">TCP</td><td>OpenSearch / Wazuh indexer</td></tr>
+        <tr><td class="port-num">55000</td><td class="port-service">TCP</td><td>Wazuh API</td></tr>
+      </table>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo systemctl enable --now firewalld
+
+<span class="comment"># Custom SSH port</span>
+sudo firewall-cmd --permanent --add-port=7389/tcp
+sudo firewall-cmd --permanent --remove-service=ssh
+
+<span class="comment"># Application ports</span>
+sudo firewall-cmd --permanent --add-port=443/tcp
+sudo firewall-cmd --permanent --add-port=1514/tcp
+sudo firewall-cmd --permanent --add-port=1515/tcp
+sudo firewall-cmd --permanent --add-port=9200/tcp
+sudo firewall-cmd --permanent --add-port=55000/tcp
+
+<span class="comment"># Apply and verify</span>
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07. AUTO UPDATES -->
+  <div class="guide-section" id="updates">
+    <div class="section-bar">
+      <div class="section-num">07</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: PATCHING // DNF_AUTOMATIC ]</div>
+        <h2>Automatic Updates</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo dnf install -y dnf-automatic
+sudo nano /etc/dnf/automatic.conf</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath">/etc/dnf/<span class="filename">automatic.conf</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>apply_updates = yes</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo systemctl enable --now dnf-automatic-install.timer
+sudo systemctl status dnf-automatic-install.timer</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 08. WAZUH -->
+  <div class="guide-section" id="wazuh">
+    <div class="section-bar">
+      <div class="section-num">08</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: HIDS // WAZUH_INSTALL ]</div>
+        <h2>Wazuh HIDS Installation</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <h3>Add the Wazuh repository</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo rpm --import https://packages.wazuh.com/key/GPG-KEY-WAZUH
+
+sudo tee /etc/yum.repos.d/wazuh.repo &lt;&lt; EOF
+[wazuh]
+gpgcheck=1
+gpgkey=https://packages.wazuh.com/key/GPG-KEY-WAZUH
+enabled=1
+name=Wazuh repository
+baseurl=https://packages.wazuh.com/4.x/yum/
+protect=1
+EOF</pre>
+      </div>
+
+      <h3>Install components</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo dnf install -y wazuh-manager
+sudo systemctl enable --now wazuh-manager
+
+sudo dnf install -y wazuh-indexer wazuh-dashboard</pre>
+      </div>
+      <div class="callout callout-warn">
+        <span class="callout-icon">⚠</span>
+        <span>If the manager is already installed before running the install script, it will exit early without generating SSL certificates. See Section 09 to handle this manually.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 09. SSL -->
+  <div class="guide-section" id="certs">
+    <div class="section-bar">
+      <div class="section-num">09</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: PKI // SSL_CERTIFICATES ]</div>
+        <h2>SSL Certificate Setup</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>Required if the all-in-one installer was interrupted or run on a system with existing Wazuh components.</p>
+
+      <h3>Generate certificates</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>curl -sO https://packages.wazuh.com/4.9/wazuh-certs-tool.sh</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">config.yml</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>nodes:
+  indexer:
+    - name: node-1
+      ip: "192.168.1.33"
+  server:
+    - name: wazuh-1
+      ip: "192.168.1.33"
+  dashboard:
+    - name: dashboard
+      ip: "192.168.1.33"</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo bash wazuh-certs-tool.sh -A
+ls wazuh-certificates/</pre>
+      </div>
+
+      <h3>Copy certs to indexer</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo mkdir -p /etc/wazuh-indexer/certs
+sudo cp /home/katato/wazuh-certificates/root-ca.pem /etc/wazuh-indexer/certs/
+sudo cp /home/katato/wazuh-certificates/node-1.pem /etc/wazuh-indexer/certs/indexer.pem
+sudo cp /home/katato/wazuh-certificates/node-1-key.pem /etc/wazuh-indexer/certs/indexer-key.pem
+sudo cp /home/katato/wazuh-certificates/admin.pem /etc/wazuh-indexer/certs/
+sudo cp /home/katato/wazuh-certificates/admin-key.pem /etc/wazuh-indexer/certs/
+sudo chown -R wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/certs/
+sudo chmod 500 /etc/wazuh-indexer/certs/
+sudo chmod 400 /etc/wazuh-indexer/certs/*</pre>
+      </div>
+
+      <h3>Copy certs to dashboard</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo mkdir -p /etc/wazuh-dashboard/certs
+sudo cp /home/katato/wazuh-certificates/root-ca.pem /etc/wazuh-dashboard/certs/
+sudo cp /home/katato/wazuh-certificates/dashboard.pem /etc/wazuh-dashboard/certs/
+sudo cp /home/katato/wazuh-certificates/dashboard-key.pem /etc/wazuh-dashboard/certs/
+sudo chown -R wazuh-dashboard:wazuh-dashboard /etc/wazuh-dashboard/certs/
+sudo chmod 500 /etc/wazuh-dashboard/certs/
+sudo chmod 400 /etc/wazuh-dashboard/certs/*</pre>
+      </div>
+
+      <h3>Copy certs for Filebeat</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo mkdir -p /etc/filebeat/certs
+sudo cp /home/katato/wazuh-certificates/root-ca.pem /etc/filebeat/certs/
+sudo cp /home/katato/wazuh-certificates/wazuh-1.pem /etc/filebeat/certs/filebeat.pem
+sudo cp /home/katato/wazuh-certificates/wazuh-1-key.pem /etc/filebeat/certs/filebeat-key.pem
+sudo chown -R root:root /etc/filebeat/certs/
+sudo chmod 500 /etc/filebeat/certs/
+sudo chmod 400 /etc/filebeat/certs/*</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. SERVICES -->
+  <div class="guide-section" id="services">
+    <div class="section-bar">
+      <div class="section-num">10</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: SYSTEMD // SERVICE_STARTUP ]</div>
+        <h2>Wazuh Services</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>Start in this exact order — each service depends on the previous:</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span> — startup sequence</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="comment"># 1 — Indexer first</span>
+sudo systemctl enable --now wazuh-indexer
+sudo systemctl status wazuh-indexer --no-pager | grep Active
+
+<span class="comment"># Wait 30 seconds then initialize security</span>
+sudo /usr/share/wazuh-indexer/bin/indexer-security-init.sh
+
+<span class="comment"># 2 — Manager</span>
+sudo systemctl restart wazuh-manager
+sleep 20
+sudo systemctl status wazuh-manager --no-pager | grep Active
+
+<span class="comment"># 3 — Dashboard last</span>
+sudo systemctl restart wazuh-dashboard
+sleep 20
+sudo systemctl status wazuh-dashboard --no-pager | grep Active</pre>
+      </div>
+
+      <h3>Access the dashboard</h3>
+      <div class="callout callout-info">
+        <span class="callout-icon">🌐</span>
+        <span>Open <code>https://192.168.1.33</code> in your browser. Accept the self-signed certificate warning — Chrome: <strong>Advanced → Proceed</strong> · Firefox: <strong>Advanced → Accept the Risk</strong></span>
+      </div>
+
+      <h3>Install Wazuh agent on ThinkPad</h3>
+      <p>Run this on the ThinkPad, not the NUC:</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span> — ThinkPad T14</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo rpm --import https://packages.wazuh.com/key/GPG-KEY-WAZUH
+
+sudo tee /etc/yum.repos.d/wazuh.repo &lt;&lt; EOF
+[wazuh]
+gpgcheck=1
+gpgkey=https://packages.wazuh.com/key/GPG-KEY-WAZUH
+enabled=1
+name=Wazuh repository
+baseurl=https://packages.wazuh.com/4.x/yum/
+protect=1
+EOF
+
+sudo WAZUH_MANAGER="192.168.1.33" dnf install -y wazuh-agent
+sudo systemctl enable --now wazuh-agent</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span> — verify on NUC</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo /var/ossec/bin/agent_control -l</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. FILEBEAT -->
+  <div class="guide-section" id="filebeat">
+    <div class="section-bar">
+      <div class="section-num">11</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: LOG_PIPELINE // FILEBEAT ]</div>
+        <h2>Filebeat Setup</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>Filebeat ships Wazuh alerts from log files into OpenSearch.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo dnf install -y filebeat
+
+sudo curl -so /etc/filebeat/filebeat.yml \
+  https://packages.wazuh.com/4.9/tpl/wazuh/filebeat/filebeat.yml
+
+sudo curl -so /etc/filebeat/wazuh-template.json \
+  https://raw.githubusercontent.com/wazuh/wazuh/v4.9.2/extensions/elasticsearch/7.x/wazuh-template.json</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath">/etc/filebeat/<span class="filename">filebeat.yml</span> — output section</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>output.elasticsearch:
+  hosts: ["192.168.1.33:9200"]
+  protocol: https
+  username: "admin"
+  password: "your_password_here"
+  ssl.certificate_authorities:
+    - /etc/filebeat/certs/root-ca.pem
+  ssl.certificate: "/etc/filebeat/certs/filebeat.pem"
+  ssl.key: "/etc/filebeat/certs/filebeat-key.pem"</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo systemctl enable --now filebeat
+
+<span class="comment"># Verify alerts are flowing</span>
+curl -s -k -u admin:admin \
+  "https://192.168.1.33:9200/_cat/indices?v" | grep wazuh-alerts</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12. HEALTH CHECK -->
+  <div class="guide-section" id="health">
+    <div class="section-bar">
+      <div class="section-num">12</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: VERIFICATION // HEALTH_CHECK ]</div>
+        <h2>Health Check</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>Run this any time to verify all core services are healthy:</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span> — full health check</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>echo "=== SERVICES ===" && \
+sudo systemctl status wazuh-manager wazuh-indexer wazuh-dashboard \
+  filebeat --no-pager | grep -E "●|Active" && \
+echo "" && \
+echo "=== CLUSTER HEALTH ===" && \
+curl -s -k -u admin:admin \
+  "https://192.168.1.33:9200/_cluster/health?pretty" | grep -E "status|number_of_nodes" && \
+echo "" && \
+echo "=== ALERTS IN OPENSEARCH ===" && \
+curl -s -k -u admin:admin \
+  "https://192.168.1.33:9200/_cat/indices?v" | grep wazuh-alerts && \
+echo "" && \
+echo "=== AGENT STATUS ===" && \
+sudo /var/ossec/bin/agent_control -l</pre>
+      </div>
+
+      <h3>Expected healthy output</h3>
+      <table class="data-table">
+        <tr>
+          <th>Service</th><th>Expected Status</th>
+        </tr>
+        <tr><td>wazuh-manager</td><td class="status-ok">active (running)</td></tr>
+        <tr><td>wazuh-indexer</td><td class="status-ok">active (running)</td></tr>
+        <tr><td>wazuh-dashboard</td><td class="status-ok">active (running)</td></tr>
+        <tr><td>filebeat</td><td class="status-ok">active (running)</td></tr>
+        <tr><td>OpenSearch cluster</td><td class="status-warn">green or yellow</td></tr>
+        <tr><td>wazuh-alerts index</td><td class="status-ok">doc count &gt; 0</td></tr>
+        <tr><td>ThinkPad T14 agent</td><td class="status-ok">Active</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 13. LESSONS -->
+  <div class="guide-section" id="lessons">
+    <div class="section-bar">
+      <div class="section-num">13</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: POST_MORTEM // LESSONS ]</div>
+        <h2>Lessons Learned</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="lessons">
+
+        <div class="lesson">
+          <div class="lesson-title">[ SSL // CERT_BOOTSTRAPPING ]</div>
+          <p>The Wazuh all-in-one installer assumes a clean system. If any Wazuh component is already installed it exits early without generating or placing SSL certificates. The fix is to run <code>wazuh-certs-tool.sh</code> manually and copy each cert file to its correct directory with correct ownership and permissions.</p>
+          <div class="code-block" style="margin-top:0.75rem">
+            <div class="code-header">
+              <span class="code-filepath"><span class="filename">bash</span> — always back up certs</span>
+              <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+            </div>
+            <pre>sudo cp -r /etc/wazuh-indexer/certs /etc/wazuh-indexer/certs.bak</pre>
+          </div>
+        </div>
+
+        <div class="lesson">
+          <div class="lesson-title">[ CONFIG // OSSEC_XML_CORRUPTION ]</div>
+          <p>The manager config file can become corrupted if edited incorrectly. Always validate XML before restarting. Back up the config before every edit.</p>
+          <div class="code-block" style="margin-top:0.75rem">
+            <div class="code-header">
+              <span class="code-filepath"><span class="filename">bash</span> — validate XML</span>
+              <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+            </div>
+            <pre>sudo python3 -c "
+import xml.etree.ElementTree as ET
+try:
+    ET.parse('/var/ossec/etc/ossec.conf')
+    print('XML is valid')
+except ET.ParseError as e:
+    print(f'XML error: {e}')
+"
+
+sudo cp /var/ossec/etc/ossec.conf /var/ossec/etc/ossec.conf.bak</pre>
+          </div>
+        </div>
+
+        <div class="lesson">
+          <div class="lesson-title">[ TLS // FILEBEAT_CERT_MISMATCH ]</div>
+          <p>Filebeat failed with <code>x509: certificate is valid for 192.168.1.33, not 127.0.0.1</code> because the config used <code>127.0.0.1</code> as the host but the cert was generated for <code>192.168.1.33</code>. Always use the actual server IP in Filebeat's output config — never localhost or 127.0.0.1.</p>
+        </div>
+
+        <div class="lesson">
+          <div class="lesson-title">[ OPENSEARCH // REPLICA_WARNINGS ]</div>
+          <p>Single-node clusters show <code>yellow</code> status because there's no second node to hold replicas. Fix by setting replicas to zero — this turns the index green immediately.</p>
+          <div class="code-block" style="margin-top:0.75rem">
+            <div class="code-header">
+              <span class="code-filepath"><span class="filename">bash</span></span>
+              <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+            </div>
+            <pre>curl -s -k -u admin:admin -X PUT \
+  "https://192.168.1.33:9200/wazuh-alerts-*/_settings" \
+  -H 'Content-Type: application/json' \
+  -d '{"number_of_replicas": 0}'</pre>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- end page-wrap -->
+
+<footer>
+  <div class="footer-inner">
+    <a href="index.html" class="footer-logo">
+      <span class="bracket">[</span> SOC_HOME_LAB <span class="bracket">]</span>
+    </a>
+    <ul class="footer-links">
+      <li><a href="https://github.com/kat2120/SOCHomeLab" target="_blank">GitHub</a></li>
+      <li><a href="infrastructure-guide.html">Infra Guide</a></li>
+      <li><a href="detection-guide.html">Detection Guide</a></li>
+    </ul>
+    <div class="footer-copy">Built by Kathlyn &amp; Richard · Fedora 42 · Wazuh 4.9</div>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 55);
+    }
+  });
+}, { threshold: 0.06 });
+
+document.querySelectorAll('.guide-section').forEach(el => obs.observe(el));
+
+// Copy buttons
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).catch(() => {});
+  btn.textContent = 'COPIED';
+  btn.classList.add('copied');
+  setTimeout(() => {
+    btn.textContent = 'COPY';
+    btn.classList.remove('copied');
+  }, 2000);
+}
+
+// Live clock
+(function () {
+  function tick() {
+    const el = document.getElementById('sys-time');
+    if (el) el.textContent = new Date().toLocaleTimeString('en-CA', { hour12: false });
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
+
+</body>
+</html>
