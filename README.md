@@ -36,15 +36,6 @@ The environment consists of a centralized management node and distributed endpoi
 
 **Total project cost: $0** — every tool is free and open source.
 
-
-## 🚀 Key Features
-
-- **24/7 Threat Detection:** Continuous monitoring of logins, sudo commands, and file changes [cite: 1].
-- **OT/ICS Focus:** Configured to handle industrial protocol anomalies and traffic patterns [cite: 1].
-- **Instant Alerts:** Critical threats are delivered to mobile devices via Telegram within seconds [cite: 1].
-- **Threat Intel Enrichment:** Automatic VirusTotal API integration for suspicious IP scoring [cite: 1].
-- **Hardened Infrastructure:** Custom SSH ports (7389), key-based authentication, and automated security updates [cite: 1, 2].
-
 ## 📖 Project Documentation
 
 Detailed step-by-step guides are available in the repository:
