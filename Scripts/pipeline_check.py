@@ -15,7 +15,7 @@ import subprocess
 import requests
 from datetime import datetime, timezone
 
-LOKI_URL  = "http://localhost:3100"
+LOKI_URL  = "http://localhost:[Loki Port (default port: 3100)]"
 TARGET_IP = "127.0.0.1"
 WAIT_TIME = 8   # seconds to wait after trigger before checking Loki
 
