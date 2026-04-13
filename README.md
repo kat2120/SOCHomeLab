@@ -40,14 +40,6 @@ The environment consists of a centralized management node and distributed endpoi
 
 Detailed step-by-step guides are available in the repository:
 
-1.  [**Infrastructure Guide**](documentation-website/infrastructure-guide.html): Covers bare-metal Fedora setup, SSL certificate bootstrapping, and service hardening [cite: 2].
-2.  [**Detection Guide**](https://github.com/kat2120/SOCHomeLab): Covers Suricata rule-writing, custom Python alert logic, and malware analysis workflows [cite: 1].
-
-## 🛡️ Challenges Overcome
-
-- **SSL Bootstrapping:** Manually diagnosed and repaired Wazuh certificate tool failures on non-clean installations [cite: 1, 2].
-- **XML Validation:** Automated the repair of corrupted `ossec.conf` files using Python parsers [cite: 1, 2].
-- **Field Mapping:** Resolved OpenSearch `illegal_argument_exception` errors by implementing custom index templates for correct data typing [cite: 1].
 
 ---
-Built by **Kathlyn** & **Richard** | British Columbia Institute of Technology (BCIT) [cite: 1, 2]
+Built by **Kathlyn** & **Richard**
