@@ -14,9 +14,9 @@ your phone — built entirely with free, open-source tools used in enterprise SO
 
 The environment consists of a centralized management node and distributed endpoints, integrating host-based and network-based detection.
 
-- **Central SOC Node (Intel NUC):** Fedora 42 server hosting the Wazuh Manager, Indexer, Dashboard, and Suricata IDS [cite: 1, 2].
-- **Monitored Endpoint (ThinkPad T14):** Fedora 42 workstation running the Wazuh Agent for real-time telemetry [cite: 1, 2].
-- **Alert Engine:** Custom Python engine tailing JSON logs, performing VirusTotal IP reputation lookups, and routing critical alerts to Telegram [cite: 1].
+- **Central SOC Node (Intel NUC):** Fedora 42 server hosting the Wazuh Manager, Indexer, Dashboard, and Suricata IDS.
+- **Monitored Endpoint (ThinkPad T14):** Fedora 42 workstation running the Wazuh Agent for real-time telemetry.
+- **Alert Engine:** Custom Python engine tailing JSON logs, performing VirusTotal IP reputation lookups, and routing critical alerts to Telegram.
 
 ## ⚙️ Tech Stack
 
