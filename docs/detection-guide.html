@@ -1,0 +1,2079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOCHomeLab — Detection Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════════════════════════
+   SOCHomeLab — Detection Guide
+   Design system matched to infrastructure-guide.html v1.0.4
+   ════════════════════════════════════════════════════════════ */
+
+:root {
+  --void:        #060709;
+  --base:        #0a0c10;
+  --surface:     #0f1117;
+  --surface-2:   #141720;
+  --border:      rgba(255,255,255,0.08);
+  --border-hard: rgba(255,255,255,0.14);
+  --orange:      #f97316;
+  --orange-dim:  rgba(249,115,22,0.1);
+  --cyan:        #06b6d4;
+  --cyan-dim:    rgba(6,182,212,0.1);
+  --green:       #22c55e;
+  --green-dim:   rgba(34,197,94,0.1);
+  --yellow:      #eab308;
+  --yellow-dim:  rgba(234,179,8,0.1);
+  --red:         #ef4444;
+  --white:       #f1f3f5;
+  --muted:       #8b929e;
+  --dim:         #4b5563;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body:    'Inter', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--void);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  letter-spacing: -0.01em;
+  overflow-x: hidden;
+}
+
+/* DOT-GRID */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+/* SCANLINES */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ══════════════════════════
+   STATUS BAR
+   ══════════════════════════ */
+.status-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  background: var(--void);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+}
+
+.status-bar-left, .status-bar-right {
+  display: flex; align-items: center; gap: 2rem;
+}
+
+.status-item { display: flex; align-items: center; gap: 0.4rem; }
+.status-item .key { color: var(--dim); }
+.status-item .val { color: var(--cyan); }
+.status-item.active .val { color: var(--green); }
+
+.status-pulse {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: blink 1.8s steps(1) infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
+
+/* ══════════════════════════
+   NAV
+   ══════════════════════════ */
+nav {
+  position: fixed;
+  top: 28px; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 52px;
+  background: rgba(6,7,9,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--white);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.nav-logo-bracket { color: var(--orange); }
+.nav-logo-version {
+  font-size: 9px;
+  color: var(--dim);
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  margin-left: 4px;
+  letter-spacing: 0.05em;
+}
+
+.nav-links { display: flex; gap: 0; list-style: none; }
+
+.nav-links a {
+  color: var(--dim);
+  text-decoration: none;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0 1.1rem;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid var(--border);
+  transition: color 0.15s, background 0.15s;
+}
+
+.nav-links li:first-child a { border-left: 1px solid var(--border); }
+.nav-links a:hover { color: var(--white); background: rgba(255,255,255,0.03); }
+.nav-links a.active { color: var(--orange); border-bottom: 1px solid var(--orange); }
+
+.nav-cta {
+  background: var(--orange) !important;
+  color: var(--void) !important;
+  font-weight: 600 !important;
+  border: none !important;
+  padding: 0 1.25rem !important;
+}
+.nav-cta:hover { background: #fb923c !important; color: var(--void) !important; }
+
+/* ══════════════════════════
+   PAGE LAYOUT
+   ══════════════════════════ */
+.page-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 110px 2rem 6rem;
+}
+
+/* ══════════════════════════
+   DOC HEADER
+   ══════════════════════════ */
+.doc-header {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  margin-bottom: 2px;
+}
+
+.doc-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.doc-header-bar .doc-id { color: var(--orange); }
+.doc-header-bar .doc-meta { color: var(--dim); }
+
+.doc-header-body { padding: 2rem 2rem 1.75rem; }
+
+.doc-classify {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.doc-classify-tag {
+  background: var(--orange);
+  color: var(--void);
+  font-weight: 600;
+  padding: 2px 7px;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+}
+
+.doc-header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  margin-bottom: 1rem;
+}
+
+.doc-header h1 .accent { color: var(--orange); }
+
+.doc-subtitle {
+  color: var(--muted);
+  font-size: 0.92rem;
+  max-width: 560px;
+  line-height: 1.8;
+  letter-spacing: -0.005em;
+  margin-bottom: 1.25rem;
+}
+
+.doc-author {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+  text-transform: uppercase;
+}
+
+.author-pulse {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: blink 2s steps(1) infinite;
+}
+
+.doc-tag-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.doc-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  padding: 3px 9px;
+  background: rgba(255,255,255,0.04);
+  color: var(--dim);
+  border: 1px solid var(--border);
+  text-transform: uppercase;
+}
+
+.doc-tag.orange { background: var(--orange-dim); color: var(--orange); border-color: rgba(249,115,22,0.25); }
+.doc-tag.cyan   { background: var(--cyan-dim);   color: var(--cyan);   border-color: rgba(6,182,212,0.25); }
+.doc-tag.green  { background: var(--green-dim);  color: var(--green);  border-color: rgba(34,197,94,0.25); }
+.doc-tag.red    { background: rgba(239,68,68,0.1); color: var(--red); border-color: rgba(239,68,68,0.25); }
+
+/* ══════════════════════════
+   TABLE OF CONTENTS
+   ══════════════════════════ */
+.toc {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  margin-bottom: 2px;
+}
+
+.toc-header {
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  padding: 0;
+}
+
+.toc a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 10px 16px;
+  text-decoration: none;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  transition: color 0.15s, background 0.15s;
+}
+
+.toc a:nth-child(even) { border-right: none; }
+.toc a:nth-last-child(-n+2) { border-bottom: none; }
+
+.toc a:hover { color: var(--orange); background: rgba(249,115,22,0.04); }
+
+.toc-num {
+  color: var(--orange);
+  min-width: 20px;
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+/* ══════════════════════════
+   SECTION STRUCTURE
+   ══════════════════════════ */
+.guide-section {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  margin-bottom: 2px;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.guide-section.visible { opacity: 1; transform: translateY(0); }
+
+.section-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.section-num {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: rgba(249,115,22,0.3);
+  line-height: 1;
+  padding: 0.6rem 1rem;
+  border-right: 1px solid var(--border);
+  min-width: 64px;
+  text-align: center;
+}
+
+.section-title-block { padding: 0.6rem 1rem; flex: 1; }
+
+.section-protocol {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--orange);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.section-title-block h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--white);
+}
+
+.section-body {
+  padding: 1.5rem 1.75rem;
+}
+
+.section-body p,
+.section-body > p {
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.75;
+  margin-bottom: 0.85rem;
+  letter-spacing: -0.005em;
+}
+
+.section-body p:last-child { margin-bottom: 0; }
+
+/* ── H3 sub-headings ── */
+.section-body h3 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin: 1.5rem 0 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-body h3::before {
+  content: '//';
+  color: var(--orange);
+  opacity: 0.5;
+}
+
+.section-body h3:first-child { margin-top: 0; }
+
+/* ══════════════════════════
+   CODE BLOCKS
+   ══════════════════════════ */
+.code-block {
+  border: 1px solid var(--border);
+  background: var(--void);
+  margin: 0.85rem 0;
+  position: relative;
+}
+
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.code-filepath {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.code-filepath .filename { color: var(--orange); }
+
+.copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: all 0.1s;
+  user-select: none;
+}
+
+.copy-btn:hover  { border-color: var(--orange); color: var(--orange); }
+.copy-btn:active { transform: translateY(1px); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); }
+
+pre {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--muted);
+  padding: 1.1rem 1.25rem;
+  overflow-x: auto;
+}
+
+pre .comment { color: var(--dim); }
+pre .cmd     { color: var(--cyan); }
+pre .key     { color: var(--orange); }
+
+.comment { color: var(--dim); }
+
+code {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  background: rgba(255,255,255,0.05);
+  color: var(--cyan);
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+}
+
+/* ══════════════════════════
+   CALLOUTS
+   ══════════════════════════ */
+.callout {
+  display: flex;
+  gap: 0.85rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid;
+  border-left-width: 3px;
+  margin: 0.85rem 0;
+  font-size: 13px;
+  line-height: 1.7;
+  letter-spacing: -0.005em;
+}
+
+.callout-warn {
+  background: var(--yellow-dim);
+  border-color: rgba(234,179,8,0.2);
+  border-left-color: var(--yellow);
+  color: #fde68a;
+}
+
+.callout-info {
+  background: var(--cyan-dim);
+  border-color: rgba(6,182,212,0.2);
+  border-left-color: var(--cyan);
+  color: #a5f3fc;
+}
+
+.callout-tip {
+  background: var(--green-dim);
+  border-color: rgba(34,197,94,0.2);
+  border-left-color: var(--green);
+  color: #bbf7d0;
+}
+
+.callout-icon { flex-shrink: 0; margin-top: 1px; }
+
+/* ══════════════════════════
+   TABLES
+   ══════════════════════════ */
+.data-table, .info-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  margin: 0.85rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.data-table th, .info-table th {
+  background: var(--surface-2);
+  padding: 9px 14px;
+  text-align: left;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+}
+
+.data-table td, .info-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--muted);
+  vertical-align: top;
+}
+
+.data-table tr:last-child td,
+.info-table tr:last-child td { border-bottom: none; }
+
+.data-table td:first-child,
+.info-table td:first-child {
+  color: var(--dim);
+  width: 160px;
+  background: rgba(255,255,255,0.015);
+  white-space: nowrap;
+}
+
+/* ══════════════════════════
+   LAYER CARDS (overview grid)
+   ══════════════════════════ */
+.layer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin: 1rem 0;
+}
+
+.layer-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--orange);
+  padding: 1.25rem 1.4rem;
+}
+
+.layer-title {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 10px;
+  margin-bottom: 0.6rem;
+  color: var(--orange);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.layer-desc { color: var(--muted); font-size: 13px; line-height: 1.7; }
+
+/* ══════════════════════════
+   PIPELINE FLOW
+   ══════════════════════════ */
+.pipeline-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 1rem 0;
+  border: 1px solid var(--border);
+  background: var(--void);
+}
+
+.pipe-node {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--cyan);
+  padding: 10px 14px;
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.pipe-arrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--orange);
+  padding: 10px 8px;
+  border-right: 1px solid var(--border);
+  opacity: 0.6;
+}
+
+/* ══════════════════════════
+   TASK LIST
+   ══════════════════════════ */
+.task-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; margin: 0.75rem 0; }
+
+.task-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 13px;
+  color: var(--muted);
+  font-family: var(--font-body);
+}
+
+.task-list li::before {
+  content: '→';
+  color: var(--orange);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════
+   STEPS
+   ══════════════════════════ */
+.steps { display: flex; flex-direction: column; gap: 2px; margin: 0.85rem 0; }
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  border: 1px solid var(--border);
+  background: var(--void);
+}
+
+.step-num {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: rgba(249,115,22,0.4);
+  line-height: 1;
+  padding: 0.65rem 0.9rem;
+  border-right: 1px solid var(--border);
+  min-width: 50px;
+  text-align: center;
+}
+
+.step-content { padding: 0.6rem 1rem; flex: 1; }
+
+.step-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--white);
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
+.step-desc {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 3px;
+  line-height: 1.6;
+}
+
+/* ══════════════════════════
+   RULE CARDS
+   ══════════════════════════ */
+.rule-card {
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--cyan);
+  background: var(--void);
+  padding: 1rem 1.25rem;
+  margin: 0.85rem 0;
+}
+
+.rule-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 0.5rem;
+}
+
+/* ══════════════════════════
+   LESSON CARDS
+   ══════════════════════════ */
+.lessons { display: flex; flex-direction: column; gap: 2px; }
+
+.lesson {
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--orange);
+  background: var(--surface);
+  padding: 1.1rem 1.4rem;
+  transition: background 0.15s, border-color 0.15s;
+  position: relative;
+}
+
+.lesson:hover {
+  background: var(--surface-2);
+  border-left-color: var(--orange);
+}
+
+.lesson-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lesson p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.005em;
+}
+
+.lesson p:last-child { margin-bottom: 0; }
+
+/* ══════════════════════════
+   FOOTER
+   ══════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  margin-top: 2px;
+}
+
+.footer-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-logo {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--dim);
+  text-decoration: none;
+}
+
+.footer-logo .bracket { color: var(--orange); }
+
+.footer-links { display: flex; gap: 0; list-style: none; }
+
+.footer-links a {
+  color: var(--dim);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  border-right: 1px solid var(--border);
+  transition: color 0.15s;
+}
+
+.footer-links li:first-child a { border-left: 1px solid var(--border); }
+.footer-links a:hover { color: var(--cyan); }
+
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 0.06em;
+}
+
+/* ══════════════════════════
+   RESPONSIVE
+   ══════════════════════════ */
+@media (max-width: 768px) {
+  .status-bar { display: none; }
+  nav { top: 0; }
+  .page-wrap { padding: 70px 1.25rem 4rem; }
+  .toc-grid { grid-template-columns: 1fr; }
+  .toc a { border-right: none; }
+  .toc a:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
+  .toc a:last-child { border-bottom: none; }
+  .footer-inner { flex-direction: column; gap: 1rem; text-align: center; }
+  .section-num { display: none; }
+  .doc-header h1 { font-size: 2.8rem; }
+  .layer-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <div class="status-bar-left">
+    <div class="status-item active">
+      <span class="status-pulse"></span>
+      <span class="key">NODE_STATUS:</span>
+      <span class="val">ACTIVE</span>
+    </div>
+    <div class="status-item">
+      <span class="key">DOC:</span>
+      <span class="val">DETECTION_GUIDE // DOC-002</span>
+    </div>
+    <div class="status-item">
+      <span class="key">PLATFORM:</span>
+      <span class="val">FEDORA_42 // SURICATA // PYTHON</span>
+    </div>
+  </div>
+  <div class="status-bar-right">
+    <div class="status-item active">
+      <span class="key">SECTIONS:</span>
+      <span class="val">12</span>
+    </div>
+    <div class="status-item">
+      <span class="key">SYS_TIME:</span>
+      <span class="val" id="sys-time">--:--:--</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-bracket">[</span>
+    <span>SOC_HOME_LAB</span>
+    <span class="nav-logo-bracket">]</span>
+    <span class="nav-logo-version">v1.0.4</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#stack">Stack</a></li>
+    <li><a href="index.html#architecture">Architecture</a></li>
+    <li><a href="index.html#team">Team</a></li>
+    <li><a href="index.html#guides">Guides</a></li>
+    <li><a href="infrastructure-guide.html">Infrastructure</a></li>
+    <li><a href="detection-guide.html" class="active">Detection</a></li>
+    <li><a href="https://github.com/kat2120/SOCHomeLab" target="_blank" class="nav-cta">GitHub →</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- DOC HEADER -->
+  <div class="doc-header guide-section visible">
+    <div class="doc-header-bar">
+      <span class="doc-id">[ DOC-002 // DETECTION_GUIDE ]</span>
+      <span class="doc-meta">Author: Richard · v1.0.4</span>
+    </div>
+    <div class="doc-header-body">
+      <div class="doc-classify">
+        <span class="doc-classify-tag">FIELD MANUAL</span>
+        <span style="color:var(--border-hard)">|</span>
+        COMPLETE DETECTION WALKTHROUGH
+      </div>
+      <h1>Detection<br><span class="accent">Guide</span></h1>
+      <p class="doc-subtitle">Complete walkthrough of the HomeSOC detection pipeline — Suricata IDS, custom rules, Python alert engine, VirusTotal enrichment, and Telegram notifications.</p>
+      <div class="doc-author">
+        <span class="author-pulse"></span>
+        Written by Richard · Detection Engineer
+      </div>
+      <div class="doc-tag-row">
+        <span class="doc-tag orange">Suricata</span>
+        <span class="doc-tag cyan">Python</span>
+        <span class="doc-tag red">Detection</span>
+        <span class="doc-tag">Loki</span>
+        <span class="doc-tag">Grafana</span>
+        <span class="doc-tag">VirusTotal</span>
+        <span class="doc-tag green">Telegram</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc guide-section">
+    <div class="toc-header">
+      <span>[ TABLE OF CONTENTS ]</span>
+      <span style="color:var(--dim);font-size:9px;">12 SECTIONS</span>
+    </div>
+    <div class="toc-grid">
+      <a href="#overview"><span class="toc-num">01</span> Overview</a>
+      <a href="#python"><span class="toc-num">06</span> Python Alert Engine</a>
+      <a href="#install"><span class="toc-num">02</span> Suricata Installation</a>
+      <a href="#virustotal"><span class="toc-num">07</span> VirusTotal Integration</a>
+      <a href="#config"><span class="toc-num">03</span> Suricata Configuration</a>
+      <a href="#telegram"><span class="toc-num">08</span> Telegram Bot Setup</a>
+      <a href="#rules"><span class="toc-num">04</span> Custom Detection Rules</a>
+      <a href="#running"><span class="toc-num">09</span> Running the Engine</a>
+      <a href="#loki"><span class="toc-num">05</span> Loki + Grafana Integration</a>
+      <a href="#testing"><span class="toc-num">10</span> Testing the Pipeline</a>
+      <a href="#malware"><span class="toc-num">11</span> Malware Analysis</a>
+      <a href="#lessons"><span class="toc-num">12</span> Lessons Learned</a>
+    </div>
+  </div>
+
+  <!-- 01. OVERVIEW -->
+  <div class="guide-section" id="overview">
+    <div class="section-bar">
+      <div class="section-num">01</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: DETECTION // OVERVIEW ]</div>
+        <h2>Overview</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="layer-grid">
+        <div class="layer-card">
+          <div class="layer-title">Layer 1 — Network (Suricata)</div>
+          <div class="layer-desc">Watches all traffic on the NUC's interface. Detects malware signatures, port scans, and C2 beacons. Writes structured JSON alerts to <code>eve.json</code>.</div>
+        </div>
+        <div class="layer-card">
+          <div class="layer-title">Layer 2 — Host (Wazuh)</div>
+          <div class="layer-desc">Set up by Kathlyn. Monitors both machines for login attempts, privilege escalation, file changes, and process anomalies.</div>
+        </div>
+      </div>
+
+      <h3>Detection Engineer responsibilities</h3>
+      <ul class="task-list">
+        <li>Install and tune Suricata IDS</li>
+        <li>Write custom detection rules</li>
+        <li>Build the Python engine that reads alerts and forwards critical ones</li>
+        <li>Connect to VirusTotal for IP reputation enrichment</li>
+        <li>Send real-time Telegram notifications</li>
+      </ul>
+
+      <h3>Data flow</h3>
+      <div class="pipeline-flow">
+        <div class="pipe-node">Network traffic</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">Suricata</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">eve.json</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">Python engine</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">VirusTotal</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">Telegram 📱</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02. INSTALLATION -->
+  <div class="guide-section" id="install">
+    <div class="section-bar">
+      <div class="section-num">02</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: IDS // INSTALL ]</div>
+        <h2>Suricata IDS Installation</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>Run on the NUC:</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo dnf install -y suricata
+
+<span class="comment"># Update community ruleset</span>
+sudo suricata-update
+
+<span class="comment"># Enable and start</span>
+sudo systemctl enable --now suricata
+sudo systemctl status suricata --no-pager | grep Active
+
+<span class="comment"># Verify it's capturing traffic</span>
+sudo tail -f /var/log/suricata/suricata.log</pre>
+      </div>
+      <div class="callout callout-tip">
+        <span class="callout-icon">✅</span>
+        <span>You should see <code>Engine started</code> in the suricata.log output.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03. CONFIGURATION -->
+  <div class="guide-section" id="config">
+    <div class="section-bar">
+      <div class="section-num">03</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: IDS // CONFIG ]</div>
+        <h2>Suricata Configuration</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo nano /etc/suricata/suricata.yaml</pre>
+      </div>
+
+      <h3>Set your network interface</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath">/etc/suricata/<span class="filename">suricata.yaml</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>af-packet:
+  - interface: wlp2s0</pre>
+      </div>
+
+      <h3>Enable JSON output</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath">/etc/suricata/<span class="filename">suricata.yaml</span> — outputs section</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>outputs:
+  - eve-log:
+      enabled: yes
+      filetype: regular
+      filename: /var/log/suricata/eve.json
+      types:
+        - alert:
+            payload: yes
+            payload-printable: yes
+            metadata: yes
+        - dns
+        - http:
+            extended: yes
+        - tls:
+            extended: yes
+        - ssh
+        - flow</pre>
+      </div>
+
+      <h3>Set home network range</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath">/etc/suricata/<span class="filename">suricata.yaml</span> — vars section</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>vars:
+  address-groups:
+    HOME_NET: "[192.168.1.0/24]"
+    EXTERNAL_NET: "!$HOME_NET"</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span> — restart after changes</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo systemctl restart suricata</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04. RULES -->
+  <div class="guide-section" id="rules">
+    <div class="section-bar">
+      <div class="section-num">04</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: IDS // CUSTOM_RULES ]</div>
+        <h2>Custom Detection Rules</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>Custom rules live in <code>rules/local.rules</code> and are loaded by Suricata automatically.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo nano /etc/suricata/rules/local.rules</pre>
+      </div>
+
+      <h3>Rules written for this project</h3>
+
+      <div class="rule-card">
+        <div class="rule-label">ICMP Ping Sweep — Network Reconnaissance</div>
+        <div class="code-block" style="margin:0.5rem 0 0">
+          <div class="code-header">
+            <span class="code-filepath"><span class="filename">suricata rule</span></span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre>alert icmp any any -> $HOME_NET any (msg:"ICMP Ping Sweep Detected"; \
+  threshold: type threshold, track by_src, count 5, seconds 2; \
+  sid:9000001; rev:1;)</pre>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-label">TCP Port Scan</div>
+        <div class="code-block" style="margin:0.5rem 0 0">
+          <div class="code-header">
+            <span class="code-filepath"><span class="filename">suricata rule</span></span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre>alert tcp any any -> $HOME_NET any (msg:"TCP Port Scan Detected"; \
+  flags:S; threshold: type threshold, track by_src, count 20, seconds 5; \
+  sid:9000002; rev:1;)</pre>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-label">Common Reverse Shell Ports</div>
+        <div class="code-block" style="margin:0.5rem 0 0">
+          <div class="code-header">
+            <span class="code-filepath"><span class="filename">suricata rule</span></span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre>alert tcp $HOME_NET any -> any [4444,5555,6666,7777,8888,9999] \
+  (msg:"Outbound Connection to Common Reverse Shell Port"; \
+  sid:9000003; rev:1;)</pre>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-label">DNS Exfiltration — Long Query</div>
+        <div class="code-block" style="margin:0.5rem 0 0">
+          <div class="code-header">
+            <span class="code-filepath"><span class="filename">suricata rule</span></span>
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+          </div>
+          <pre>alert dns any any -> any any (msg:"Possible DNS Exfiltration - Long Query"; \
+  dns.query; content:"."; pcre:"/^.{50,}/"; \
+  sid:9000004; rev:1;)</pre>
+        </div>
+      </div>
+
+      <h3>Load custom rules</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath">/etc/suricata/<span class="filename">suricata.yaml</span> — rule-files section</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>rule-files:
+  - suricata.rules
+  - local.rules</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span> — reload without restart</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo kill -USR2 $(cat /var/run/suricata.pid)</pre>
+      </div>
+
+      <h3>Auto-update community rules daily</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">crontab</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>0 3 * * * /usr/bin/suricata-update && kill -USR2 $(cat /var/run/suricata.pid)</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05. LOKI + GRAFANA -->
+  <div class="guide-section" id="loki">
+    <div class="section-bar">
+      <div class="section-num">05</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: LOG_PIPELINE // LOKI_GRAFANA ]</div>
+        <h2>Loki + Grafana Integration</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>Loki collects logs from all three sources via Grafana Alloy and displays them as a live dashboard in Grafana.</p>
+
+      <h3>Stack overview</h3>
+      <div class="pipeline-flow">
+        <div class="pipe-node">Suricata eve.json</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">Grafana Alloy</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">Loki :3100</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">Grafana :3000</div>
+      </div>
+      <div class="pipeline-flow">
+        <div class="pipe-node">Wazuh alerts.json</div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node">Grafana Alloy</div>
+        <div class="pipe-arrow">↗</div>
+      </div>
+
+      <h3>Install Loki</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>cd /tmp
+wget https://github.com/grafana/loki/releases/latest/download/loki-linux-amd64.zip
+unzip loki-linux-amd64.zip
+sudo mv loki-linux-amd64 /usr/local/bin/loki
+sudo chmod +x /usr/local/bin/loki
+sudo chcon -t bin_t /usr/local/bin/loki   <span class="comment"># fix SELinux on Fedora</span>
+sudo mkdir -p /etc/loki /var/loki/{chunks,rules,tsdb}</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath">/etc/loki/<span class="filename">loki-config.yaml</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  log_level: info
+
+common:
+  path_prefix: /var/loki
+  storage:
+    filesystem:
+      chunks_directory: /var/loki/chunks
+      rules_directory: /var/loki/rules
+  replication_factor: 1
+  ring:
+    instance_addr: 127.0.0.1
+    kvstore:
+      store: inmemory
+
+schema_config:
+  configs:
+    - from: 2024-01-01
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+limits_config:
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
+  allow_structured_metadata: false</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath">/etc/systemd/system/<span class="filename">loki.service</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>[Unit]
+Description=Loki log aggregation
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/loki -config.file=/etc/loki/loki-config.yaml
+Restart=always
+RestartSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span> — start and verify</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo systemctl daemon-reload
+sudo systemctl enable --now loki
+curl http://localhost:3100/ready   <span class="comment"># should return: ready</span></pre>
+      </div>
+
+      <h3>Install Grafana Alloy (log shipper)</h3>
+      <p>Alloy replaces Promtail in Loki v3. Ships logs from all three sources into Loki.</p>
+      <div class="callout callout-info">
+        <span class="callout-icon">ℹ️</span>
+        <span>Loki v3 removed Promtail as a standalone binary. Always use Grafana Alloy instead.</span>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath">/etc/yum.repos.d/<span class="filename">grafana.repo</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>[grafana]
+name=grafana
+baseurl=https://rpm.grafana.com
+repo_gpgcheck=1
+enabled=1
+gpgcheck=1
+gpgkey=https://rpm.grafana.com/gpg.key
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo dnf makecache
+sudo dnf install -y alloy
+sudo chcon -t bin_t /usr/bin/alloy   <span class="comment"># fix SELinux</span></pre>
+      </div>
+
+      <h3>Configure Alloy</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath">/etc/alloy/<span class="filename">config.alloy</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="comment">// Loki destination</span>
+loki.write "local_loki" {
+  endpoint {
+    url = "http://localhost:3100/loki/api/v1/push"
+  }
+}
+
+<span class="comment">// SOURCE 1: Suricata IDS</span>
+local.file_match "suricata_files" {
+  path_targets = [{
+    __path__ = "/var/log/suricata/eve.json",
+    job      = "suricata",
+    source   = "suricata-ids",
+  }]
+}
+
+loki.source.file "suricata" {
+  targets    = local.file_match.suricata_files.targets
+  forward_to = [loki.process.suricata_parse.receiver]
+}
+
+loki.process "suricata_parse" {
+  stage.json {
+    expressions = {
+      event_type = "event_type",
+      severity   = "alert.severity",
+      src_ip     = "src_ip",
+      dest_ip    = "dest_ip",
+    }
+  }
+  stage.labels {
+    values = {
+      event_type = "event_type",
+      severity   = "severity",
+    }
+  }
+  forward_to = [loki.write.local_loki.receiver]
+}
+
+<span class="comment">// SOURCE 2: Wazuh HIDS</span>
+local.file_match "wazuh_files" {
+  path_targets = [{
+    __path__ = "/var/ossec/logs/alerts/alerts.json",
+    job      = "wazuh",
+    source   = "wazuh-hids",
+  }]
+}
+
+loki.source.file "wazuh" {
+  targets    = local.file_match.wazuh_files.targets
+  forward_to = [loki.process.wazuh_parse.receiver]
+}
+
+loki.process "wazuh_parse" {
+  stage.json {
+    expressions = {
+      rule_level = "rule.level",
+      rule_desc  = "rule.description",
+      agent      = "agent.name",
+    }
+  }
+  stage.labels {
+    values = {
+      rule_level = "rule_level",
+      agent      = "agent",
+    }
+  }
+  forward_to = [loki.write.local_loki.receiver]
+}
+
+<span class="comment">// SOURCE 3: Python alert engine</span>
+local.file_match "python_files" {
+  path_targets = [{
+    __path__ = "/var/log/suricata-telegram/forwarder.log",
+    job      = "python-engine",
+    source   = "python-alerts",
+  }]
+}
+
+loki.source.file "python_engine" {
+  targets    = local.file_match.python_files.targets
+  forward_to = [loki.write.local_loki.receiver]
+}</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span> — permissions and start</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo usermod -aG adm alloy
+sudo chmod o+r /var/log/suricata/eve.json
+sudo chmod o+rx /var/ossec/logs/alerts/
+sudo chmod o+r /var/ossec/logs/alerts/alerts.json
+sudo systemctl enable --now alloy</pre>
+      </div>
+
+      <h3>Install Grafana</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo dnf install -y grafana
+sudo systemctl enable --now grafana-server
+sudo firewall-cmd --permanent --add-port=3000/tcp
+sudo firewall-cmd --reload</pre>
+      </div>
+
+      <div class="callout callout-info">
+        <span class="callout-icon">🌐</span>
+        <span>Access at <code>http://&lt;server-ip&gt;:3000</code> — Default login: <code>admin</code> / <code>admin</code></span>
+      </div>
+
+      <h3>Connect Grafana to Loki</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Connections → Data sources → Add data source</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Select Loki</div><div class="step-desc">URL: <code>http://localhost:3100</code></div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Save &amp; test</div><div class="step-desc">Should show "Data source connected and labels found"</div></div></div>
+      </div>
+
+      <h3>Recommended dashboard panels</h3>
+      <table class="info-table">
+        <tr><th>Panel</th><th>LogQL Query</th><th>Type</th></tr>
+        <tr><td>Alert rate over time</td><td><code>count_over_time({job="suricata", event_type="alert"}[5m])</code></td><td>Time series</td></tr>
+        <tr><td>Live Suricata alerts</td><td><code>{job="suricata", event_type="alert"}</code></td><td>Logs</td></tr>
+        <tr><td>Wazuh high severity</td><td><code>{job="wazuh"} | json | rule_level >= 10</code></td><td>Logs</td></tr>
+        <tr><td>Python engine activity</td><td><code>{job="python-engine"}</code></td><td>Logs</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 06. PYTHON ALERT ENGINE -->
+  <div class="guide-section" id="python">
+    <div class="section-bar">
+      <div class="section-num">06</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: ALERTING // PYTHON_ENGINE ]</div>
+        <h2>Python Alert Engine</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>The alert engine tails Suricata's <code>eve.json</code> directly, filters by severity, enriches with VirusTotal, and forwards to Telegram.</p>
+
+      <h3>Project structure</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">tree</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>src/
+├── alert_engine.py      <span class="comment"># Main engine — tails eve.json</span>
+├── vt_lookup.py         <span class="comment"># VirusTotal IP reputation lookup</span>
+└── telegram_bot.py      <span class="comment"># Telegram notification sender</span></pre>
+      </div>
+
+      <h3>Dependencies</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>pip3 install requests python-dotenv</pre>
+      </div>
+
+      <h3>alert_engine.py</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath">src/<span class="filename">alert_engine.py</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>#!/usr/bin/env python3
+"""HomeSOC Alert Engine — tails Suricata eve.json and forwards critical alerts."""
+
+import json, time, os
+from datetime import datetime
+from dotenv import load_dotenv
+from vt_lookup import check_ip_reputation
+from telegram_bot import send_alert
+
+load_dotenv()
+
+EVE_LOG = os.getenv("SURICATA_EVE_LOG", "/var/log/suricata/eve.json")
+MIN_SEV = int(os.getenv("MIN_SEVERITY", "2"))   <span class="comment"># 1=critical, 2=high, 3=medium, 4=low</span>
+
+def now():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+def tail_file(filepath):
+    while not os.path.exists(filepath):
+        print(f"[{now()}] Waiting for {filepath}...")
+        time.sleep(5)
+    with open(filepath, "r") as f:
+        f.seek(0, 2)
+        current_inode = os.fstat(f.fileno()).st_ino
+        while True:
+            line = f.readline()
+            if line:
+                yield line.strip()
+            else:
+                time.sleep(0.5)
+                try:
+                    if os.stat(filepath).st_ino != current_inode:
+                        f = open(filepath, "r")
+                        current_inode = os.stat(filepath).st_ino
+                except FileNotFoundError:
+                    pass
+
+def process_alert(event):
+    if event.get("event_type") != "alert":
+        return None
+    alert    = event.get("alert", {})
+    severity = alert.get("severity", 99)
+    if severity > MIN_SEV:
+        return None
+    src_ip = event.get("src_ip", "unknown")
+    vt_result = None
+    if src_ip and not src_ip.startswith(("192.168.", "10.", "172.")):
+        vt_result = check_ip_reputation(src_ip)
+    return {
+        "severity":  severity,
+        "signature": alert.get("signature", "Unknown rule"),
+        "category":  alert.get("category", "Uncategorized"),
+        "sid":       alert.get("signature_id", "?"),
+        "src_ip":    src_ip,
+        "dest_ip":   event.get("dest_ip", "unknown"),
+        "proto":     event.get("proto", "unknown"),
+        "timestamp": event.get("timestamp", now()),
+        "vt_result": vt_result,
+    }
+
+def main():
+    print(f"[{now()}] HomeSOC Alert Engine started — watching {EVE_LOG}")
+    for line in tail_file(EVE_LOG):
+        event = json.loads(line) if line else None
+        if not event: continue
+        processed = process_alert(event)
+        if not processed: continue
+        print(f"[{now()}] ALERT SEV-{processed['severity']} — {processed['signature']}")
+        send_alert(processed)
+
+if __name__ == "__main__":
+    main()</pre>
+      </div>
+
+      <h3>vt_lookup.py</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath">src/<span class="filename">vt_lookup.py</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>#!/usr/bin/env python3
+import os, requests
+
+VT_API_KEY = os.getenv("VIRUSTOTAL_API_KEY")
+VT_URL     = "https://www.virustotal.com/api/v3/ip_addresses/{}"
+
+def check_ip_reputation(ip):
+    if not VT_API_KEY: return None
+    try:
+        r = requests.get(VT_URL.format(ip), headers={"x-apikey": VT_API_KEY}, timeout=5)
+        if r.status_code != 200: return None
+        stats     = r.json()["data"]["attributes"]["last_analysis_stats"]
+        malicious = stats.get("malicious", 0)
+        total     = sum(stats.values())
+        return {"ip": ip, "malicious": malicious, "total": total, "score": f"{malicious}/{total}"}
+    except Exception:
+        return None</pre>
+      </div>
+
+      <h3>telegram_bot.py</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath">src/<span class="filename">telegram_bot.py</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>#!/usr/bin/env python3
+import os, requests
+
+BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+CHAT_ID   = os.getenv("TELEGRAM_CHAT_ID")
+API_URL   = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+
+SEVERITY_LABELS = {1: "CRITICAL 🔴", 2: "HIGH 🟠", 3: "MEDIUM 🟡", 4: "LOW ⚪"}
+
+def format_message(alert):
+    sev = SEVERITY_LABELS.get(alert["severity"], "UNKNOWN")
+    lines = [
+        f"&lt;b&gt;Suricata Alert — {sev}&lt;/b&gt;",
+        f"",
+        f"&lt;b&gt;Rule:&lt;/b&gt; &lt;code&gt;{alert['signature']}&lt;/code&gt;",
+        f"&lt;b&gt;Category:&lt;/b&gt; {alert['category']}",
+        f"&lt;b&gt;SID:&lt;/b&gt; {alert['sid']}",
+        f"",
+        f"&lt;b&gt;Source:&lt;/b&gt;      &lt;code&gt;{alert['src_ip']}&lt;/code&gt;",
+        f"&lt;b&gt;Destination:&lt;/b&gt; &lt;code&gt;{alert['dest_ip']}&lt;/code&gt;",
+        f"&lt;b&gt;Protocol:&lt;/b&gt;    {alert['proto']}",
+        f"&lt;b&gt;Time:&lt;/b&gt; {alert['timestamp']}",
+    ]
+    if alert.get("vt_result"):
+        lines.append(f"&lt;b&gt;VirusTotal:&lt;/b&gt; {alert['vt_result']['score']} engines flagged")
+    return "\n".join(lines)
+
+def send_alert(alert):
+    if not BOT_TOKEN or not CHAT_ID: return
+    try:
+        requests.post(API_URL, json={
+            "chat_id": CHAT_ID, "text": format_message(alert), "parse_mode": "HTML"
+        }, timeout=10)
+    except Exception as e:
+        print(f"Telegram send failed: {e}")</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07. VIRUSTOTAL -->
+  <div class="guide-section" id="virustotal">
+    <div class="section-bar">
+      <div class="section-num">07</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: ENRICHMENT // VIRUSTOTAL ]</div>
+        <h2>VirusTotal Integration</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Sign up at virustotal.com</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Go to profile → API Key → copy it</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Add to your .env file</div><div class="step-desc"><code>VIRUSTOTAL_API_KEY=your_key_here</code></div></div></div>
+      </div>
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <span>Free tier allows 500 lookups/day. Only look up external IPs (non-RFC1918) on severity 1 or 2 alerts to stay well within limits.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 08. TELEGRAM -->
+  <div class="guide-section" id="telegram">
+    <div class="section-bar">
+      <div class="section-num">08</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: ALERTING // TELEGRAM_BOT ]</div>
+        <h2>Telegram Bot Setup</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <h3>Create the bot</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Search @BotFather on Telegram</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Send /newbot and follow the prompts</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Copy your bot token</div></div></div>
+      </div>
+
+      <h3>Get your chat ID</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Send any message to your new bot</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Open in browser</div><div class="step-desc"><code>https://api.telegram.org/botYOUR_TOKEN/getUpdates</code></div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Find <code>"chat":{"id":</code> — that number is your chat ID</div></div></div>
+      </div>
+
+      <h3>Add to .env</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">.env</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>VIRUSTOTAL_API_KEY=your_key_here
+TELEGRAM_BOT_TOKEN=your_token_here
+TELEGRAM_CHAT_ID=your_chat_id_here</pre>
+      </div>
+
+      <h3>Test the bot</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>python3 -c "
+from src.telegram_bot import send_alert
+send_alert({
+    'severity': 1, 'signature': 'Test alert from HomeSOC',
+    'category': 'Test', 'sid': '9999999',
+    'src_ip': '1.2.3.4', 'dest_ip': '192.168.1.33',
+    'proto': 'TCP', 'timestamp': '2026-04-06T15:00:00',
+    'vt_result': {'score': '5/94'},
+})
+"</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 09. RUNNING -->
+  <div class="guide-section" id="running">
+    <div class="section-bar">
+      <div class="section-num">09</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: ALERTING // SYSTEMD_SERVICE ]</div>
+        <h2>Running the Alert Engine</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <h3>Manual (testing)</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo python3 src/alert_engine.py</pre>
+      </div>
+
+      <h3>Production — systemd service</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath">/etc/systemd/system/<span class="filename">homesoc-alerts.service</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>[Unit]
+Description=HomeSOC Python Alert Engine
+After=network.target suricata.service
+
+[Service]
+ExecStart=/usr/bin/python3 /home/katato/HomeSOC/src/alert_engine.py
+WorkingDirectory=/home/katato/HomeSOC
+EnvironmentFile=/home/katato/HomeSOC/.env
+Restart=always
+RestartSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo systemctl daemon-reload
+sudo systemctl enable --now homesoc-alerts
+sudo systemctl status homesoc-alerts --no-pager | grep Active
+
+<span class="comment"># Check live logs</span>
+sudo journalctl -u homesoc-alerts -f</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. TESTING -->
+  <div class="guide-section" id="testing">
+    <div class="section-bar">
+      <div class="section-num">10</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: VERIFICATION // PIPELINE_TEST ]</div>
+        <h2>Testing the Pipeline</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>Five Python scripts test each layer of the SOC pipeline. Run them only against hosts you own.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">tree</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>scripts/
+├── severity_trigger.py      <span class="comment"># fires traffic for each severity level 1-4</span>
+├── pipeline_check.py        <span class="comment"># checks each stage pass/fail</span>
+├── loki_severity_report.py  <span class="comment"># queries Loki, shows counts per severity</span>
+├── port_scanner.py          <span class="comment"># TCP port scan — triggers ET SCAN rules</span>
+├── ssh_brute.py             <span class="comment"># SSH brute force — triggers Suricata + Wazuh</span>
+├── web_attacks.py           <span class="comment"># SQLi, XSS, path traversal, bad user agents</span>
+├── wazuh_triggers.py        <span class="comment"># FIM changes, /etc/shadow, sudo failures</span>
+└── run_all_tests.py         <span class="comment"># master runner — executes all in sequence</span></pre>
+      </div>
+
+      <h3>Test 1 — Severity triggers</h3>
+      <table class="info-table">
+        <tr><th>Severity</th><th>Label</th><th>What it triggers</th></tr>
+        <tr><td>1</td><td>Critical</td><td>Meterpreter UA, shellcode pattern, EternalBlue SMB probe</td></tr>
+        <tr><td>2</td><td>High</td><td>SQL injection, SSH scan burst, FTP brute force</td></tr>
+        <tr><td>3</td><td>Medium</td><td>Nmap UA, Nikto UA, path traversal, DNS VERSION query</td></tr>
+        <tr><td>4</td><td>Low</td><td>curl UA, python-requests UA</td></tr>
+      </table>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo python3 scripts/severity_trigger.py
+sudo tail -30 /var/log/suricata/fast.log</pre>
+      </div>
+
+      <h3>Test 2 — Full pipeline check</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo python3 scripts/pipeline_check.py</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">sample output</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>SEV   LABEL      SURICATA     LOKI       STATUS
+1     CRITICAL   PASS         PASS       FULL PASS
+2     HIGH       PASS         PASS       FULL PASS
+3     MEDIUM     PASS         FAIL       PARTIAL
+4     LOW        FAIL         FAIL       NO ALERT</pre>
+      </div>
+      <div class="callout callout-warn">
+        <span class="callout-icon">⚠️</span>
+        <span>If you see <code>SURICATA: PASS</code> but <code>LOKI: FAIL</code> — the problem is in Alloy. Check with <code>sudo journalctl -u alloy -f</code></span>
+      </div>
+
+      <h3>Test 3 — Loki severity report</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>python3 scripts/loki_severity_report.py</pre>
+      </div>
+
+      <h3>Test 4 — Run everything at once</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span></span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre>sudo python3 scripts/run_all_tests.py</pre>
+      </div>
+
+      <h3>End-to-end verification</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span> — full pipeline check</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="comment"># 1. Suricata caught it</span>
+sudo tail -20 /var/log/suricata/fast.log
+
+<span class="comment"># 2. Alloy shipped it to Loki</span>
+sudo journalctl -u alloy -n 20 --no-pager
+
+<span class="comment"># 3. Loki indexed it</span>
+curl http://localhost:3100/loki/api/v1/labels
+
+<span class="comment"># 4. Python engine processed it</span>
+sudo journalctl -u homesoc-alerts -n 20 --no-pager
+
+<span class="comment"># 5. Check your phone for Telegram alert</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. MALWARE -->
+  <div class="guide-section" id="malware">
+    <div class="section-bar">
+      <div class="section-num">11</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: ANALYSIS // MALWARE_SAMPLES ]</div>
+        <h2>Malware Sample Analysis</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>We test the detection pipeline using safe samples from <a href="https://bazaar.abuse.ch" style="color:var(--cyan)">MalwareBazaar</a> inside an isolated VirtualBox VM.</p>
+
+      <h3>Safe analysis environment</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Install VirtualBox on ThinkPad</div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Create a Windows VM</div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Set network to Host-Only</div><div class="step-desc">No internet access — malware can't phone home</div></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Take a clean snapshot before running anything</div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">Download samples inside the VM only</div></div></div>
+      </div>
+
+      <h3>Watch on the NUC while a sample runs</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filepath"><span class="filename">bash</span> — live monitoring</span>
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+        </div>
+        <pre><span class="comment"># Suricata network alerts in real time</span>
+sudo tail -f /var/log/suricata/fast.log
+
+<span class="comment"># Full JSON event stream</span>
+sudo tail -f /var/log/suricata/eve.json | python3 -m json.tool
+
+<span class="comment"># Wazuh host alerts</span>
+sudo tail -f /var/ossec/logs/alerts/alerts.log
+
+<span class="comment"># Python engine processing</span>
+sudo journalctl -u homesoc-alerts -f</pre>
+      </div>
+
+      <h3>Analysis report template</h3>
+      <p>Each sample should be documented in <code>docs/analysis-reports/</code>. Include:</p>
+      <ul class="task-list">
+        <li>Sample hash (MD5, SHA256)</li>
+        <li>Family if known</li>
+        <li>Static analysis — strings, imports, file type</li>
+        <li>Dynamic analysis — what Suricata and Wazuh caught</li>
+        <li>IOCs — IPs, domains, file hashes, registry keys</li>
+        <li>MITRE ATT&amp;CK techniques observed</li>
+        <li>Screenshots of alerts in the dashboard</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 12. LESSONS -->
+  <div class="guide-section" id="lessons">
+    <div class="section-bar">
+      <div class="section-num">12</div>
+      <div class="section-title-block">
+        <div class="section-protocol">[ LAYER: POST_MORTEM // LESSONS ]</div>
+        <h2>Lessons Learned</h2>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="lessons">
+
+        <div class="lesson">
+          <div class="lesson-title">[ SURICATA // WIFI_PACKET_CAPTURE ]</div>
+          <p>Running Suricata on <code>wlp2s0</code> means it only sees traffic to/from the NUC itself — not all traffic on the network. For full network visibility you need a managed switch with port mirroring, or Suricata in inline mode.</p>
+        </div>
+
+        <div class="lesson">
+          <div class="lesson-title">[ LOKI // V3_BREAKING_CHANGES ]</div>
+          <p>Loki v3 dropped <code>boltdb-shipper</code> + <code>shared_store</code> config fields and removed Promtail as a standalone binary. Use schema <code>v13</code> with <code>tsdb</code> store, and use Grafana Alloy as the log shipper instead of Promtail.</p>
+        </div>
+
+        <div class="lesson">
+          <div class="lesson-title">[ SELINUX // CUSTOM_BINARY_BLOCKING ]</div>
+          <p>Any binary placed in <code>/usr/local/bin/</code> and run by systemd will be blocked by SELinux by default on Fedora. Fix with:</p>
+          <div class="code-block" style="margin-top:0.75rem">
+            <div class="code-header">
+              <span class="code-filepath"><span class="filename">bash</span> — fix SELinux context</span>
+              <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+            </div>
+            <pre>sudo chcon -t bin_t /usr/local/bin/loki
+sudo chcon -t bin_t /usr/bin/alloy</pre>
+          </div>
+        </div>
+
+        <div class="lesson">
+          <div class="lesson-title">[ RULES // FALSE_POSITIVE_TUNING ]</div>
+          <p>The Emerging Threats ruleset generates false positives on home network traffic. Common ones to suppress: DNS queries to <code>*.local</code> triggering DNS tunneling rules, and normal HTTPS traffic flagging certificate rules. Suppress false positives in <code>/etc/suricata/threshold.conf</code>.</p>
+        </div>
+
+        <div class="lesson">
+          <div class="lesson-title">[ VIRUSTOTAL // RATE_LIMITS ]</div>
+          <p>Free tier allows 500 lookups/day. Stay within limits by only looking up external IPs (not RFC1918 ranges) on severity 1 or 2 alerts, and adding a simple dict cache keyed by IP to skip repeated lookups.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- end page-wrap -->
+
+<footer>
+  <div class="footer-inner">
+    <a href="index.html" class="footer-logo">
+      <span class="bracket">[</span> SOC_HOME_LAB <span class="bracket">]</span>
+    </a>
+    <ul class="footer-links">
+      <li><a href="https://github.com/kat2120/SOCHomeLab" target="_blank">GitHub</a></li>
+      <li><a href="infrastructure-guide.html">Infra Guide</a></li>
+      <li><a href="detection-guide.html">Detection Guide</a></li>
+    </ul>
+    <div class="footer-copy">Built by Kathlyn &amp; Richard · Fedora 42 · Suricata · Python</div>
+  </div>
+</footer>
+
+<script>
+// Clock
+function updateClock() {
+  const now = new Date();
+  const t = now.toTimeString().slice(0,8);
+  const el = document.getElementById('sys-time');
+  if (el) el.textContent = t;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// Scroll reveal
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 55);
+    }
+  });
+}, { threshold: 0.06 });
+
+document.querySelectorAll('.guide-section').forEach(el => obs.observe(el));
+
+// Copy buttons
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).catch(() => {});
+  btn.textContent = 'COPIED';
+  btn.classList.add('copied');
+  setTimeout(() => {
+    btn.textContent = 'COPY';
+    btn.classList.remove('copied');
+  }, 1800);
+}
+</script>
+</body>
+</html>
