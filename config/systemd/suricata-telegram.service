@@ -1,0 +1,11 @@
+[Unit]
+Description=Suricata to Telegram alert forwarder
+After=suricata.service
+
+[Service]
+ExecStart=/usr/bin/python3 /home/katato/python/suricata_telegram_alert.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
