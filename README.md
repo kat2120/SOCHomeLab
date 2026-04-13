@@ -1,11 +1,14 @@
-# SOCHomeLab
+# HomeSOC 🛡️
 
-![Fedora](https://img.shields.io/badge/OS-Fedora%2042-blue?logo=fedora)
-![Wazuh](https://img.shields.io/badge/SIEM-Wazuh%204.9-blue)
-![Status](https://img.shields.io/badge/Status-Deployed-success)
-![Niche](https://img.shields.io/badge/Focus-%20Cybersecurity-orange)
+A fully operational, self-hosted Security Operations Center built on a Fedora Linux
+mini PC. HomeSOC detects network intrusions, monitors host activity across two machines,
+aggregates all logs into a unified dashboard, and delivers real-time threat alerts to
+your phone — built entirely with free, open-source tools used in enterprise SOCs.
 
-A fully self-hosted, enterprise-grade Security Operations Center (SOC) purpose-built for monitoring industrial control systems (ICS) and operational technology (OT). This lab detects network intrusions, monitors endpoints, and delivers real-time threat intelligence alerts using a hardened Fedora Linux architecture.
+![Status](https://img.shields.io/badge/status-active-brightgreen)
+![Platform](https://img.shields.io/badge/platform-Fedora%2042-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Cost](https://img.shields.io/badge/cost-%240-success)
 
 ## 🏗️ System Architecture
 
