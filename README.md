@@ -3,7 +3,7 @@
 ![Fedora](https://img.shields.io/badge/OS-Fedora%2042-blue?logo=fedora)
 ![Wazuh](https://img.shields.io/badge/SIEM-Wazuh%204.9-blue)
 ![Status](https://img.shields.io/badge/Status-Deployed-success)
-![Niche](https://img.shields.io/badge/Focus-OT%2FICS%20Cybersecurity-orange)
+![Niche](https://img.shields.io/badge/Focus-%20Cybersecurity-orange)
 
 A fully self-hosted, enterprise-grade Security Operations Center (SOC) purpose-built for monitoring industrial control systems (ICS) and operational technology (OT). This lab detects network intrusions, monitors endpoints, and delivers real-time threat intelligence alerts using a hardened Fedora Linux architecture.
 
