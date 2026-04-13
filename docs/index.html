@@ -1,1 +1,2209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOCHomeLab — Industrial Network Security Monitoring</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════════════════════════
+   DESIGN SYSTEM — ENGINEERING FIELD MANUAL
+   SOCHomeLab v1.0.4 · Industrial Network Security Monitoring
+   ════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Core palette */
+  --void:        #060709;
+  --base:        #0a0c10;
+  --surface:     #0f1117;
+  --surface-2:   #141720;
+  --border:      rgba(255,255,255,0.08);
+  --border-hard: rgba(255,255,255,0.14);
+
+  /* Accent system */
+  --orange:      #f97316;
+  --orange-dim:  rgba(249,115,22,0.12);
+  --orange-glow: rgba(249,115,22,0.08);
+  --cyan:        #06b6d4;
+  --cyan-dim:    rgba(6,182,212,0.1);
+  --green:       #22c55e;
+  --green-dim:   rgba(34,197,94,0.1);
+  --red:         #ef4444;
+
+  /* Text */
+  --white:       #f1f3f5;
+  --muted:       #8b929e;
+  --dim:         #4b5563;
+  --label:       #06b6d4;
+
+  /* Fonts */
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body:    'Inter', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after {
+  margin: 0; padding: 0; box-sizing: border-box;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--void);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  letter-spacing: -0.01em;
+  overflow-x: hidden;
+}
+
+/* ── DOT-GRID BLUEPRINT OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+/* ── SCANLINE OVERLAY ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ══════════════════════════
+   SYSTEM STATUS BAR
+   ══════════════════════════ */
+.status-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  background: var(--void);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+}
+
+.status-bar-left,
+.status-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.status-item .key { color: var(--dim); }
+.status-item .val { color: var(--cyan); }
+
+.status-item.active .val { color: var(--green); }
+.status-item.warn .val   { color: var(--orange); }
+
+.status-pulse {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: blink 1.8s steps(1) infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.15; }
+}
+
+/* ══════════════════════════
+   NAVIGATION
+   ══════════════════════════ */
+nav {
+  position: fixed;
+  top: 28px; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 52px;
+  background: rgba(6,7,9,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--white);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.nav-logo-bracket { color: var(--orange); }
+.nav-logo-name { color: var(--white); }
+.nav-logo-version {
+  font-size: 9px;
+  color: var(--dim);
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  margin-left: 4px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 0;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--dim);
+  text-decoration: none;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0 1.1rem;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid var(--border);
+  transition: color 0.15s, background 0.15s;
+}
+
+.nav-links li:first-child a { border-left: 1px solid var(--border); }
+.nav-links a:hover { color: var(--white); background: rgba(255,255,255,0.03); }
+
+.nav-cta {
+  background: var(--orange) !important;
+  color: var(--void) !important;
+  font-weight: 600 !important;
+  border: none !important;
+  padding: 0 1.25rem !important;
+}
+
+.nav-cta:hover {
+  background: #fb923c !important;
+  color: var(--void) !important;
+}
+
+/* ══════════════════════════
+   HERO SECTION
+   ══════════════════════════ */
+#hero {
+  min-height: 100vh;
+  padding: 120px 2rem 5rem;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* Blueprint cross-hair grid */
+.hero-crosshair {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-crosshair::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(6,182,212,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6,182,212,0.04) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+/* Corner marks */
+.hero-corner {
+  position: absolute;
+  width: 20px; height: 20px;
+  pointer-events: none;
+}
+
+.hero-corner.tl { top: 80px; left: 2rem; border-top: 1px solid var(--orange); border-left: 1px solid var(--orange); }
+.hero-corner.tr { top: 80px; right: 2rem; border-top: 1px solid var(--orange); border-right: 1px solid var(--orange); }
+.hero-corner.bl { bottom: 2rem; left: 2rem; border-bottom: 1px solid var(--orange); border-left: 1px solid var(--orange); }
+.hero-corner.br { bottom: 2rem; right: 2rem; border-bottom: 1px solid var(--orange); border-right: 1px solid var(--orange); }
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+/* Classification ribbon */
+.hero-classify {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin-bottom: 1.75rem;
+}
+
+.classify-tag {
+  background: var(--orange);
+  color: var(--void);
+  font-weight: 600;
+  padding: 3px 8px;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+}
+
+.classify-divider { color: var(--border-hard); }
+
+/* Main heading */
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 8vw, 7.5rem);
+  line-height: 0.9;
+  letter-spacing: 0.01em;
+  margin-bottom: 1.75rem;
+}
+
+h1 .line-accent  { color: var(--orange); }
+h1 .line-outline {
+  -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+  color: transparent;
+}
+h1 .line-cyan { color: var(--cyan); }
+
+.hero-desc {
+  color: var(--muted);
+  font-size: 0.95rem;
+  max-width: 500px;
+  margin-bottom: 2.5rem;
+  line-height: 1.8;
+  letter-spacing: -0.005em;
+}
+
+/* CTA buttons — sharp corners */
+.hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+.btn-primary {
+  background: var(--orange);
+  color: var(--void);
+  padding: 12px 28px;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: background 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-primary:hover { background: #fb923c; }
+
+.btn-ghost {
+  border: 1px solid var(--border-hard);
+  color: var(--muted);
+  padding: 12px 28px;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-ghost:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+/* ── HERO DATA PANEL ── */
+.hero-panel {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  position: relative;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.panel-header-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--cyan);
+  text-transform: uppercase;
+}
+
+.panel-header-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.panel-dot {
+  width: 7px; height: 7px;
+  border: 1px solid;
+}
+
+.panel-dot.red   { border-color: var(--red);   background: var(--red); }
+.panel-dot.warn  { border-color: var(--orange); }
+.panel-dot.ok    { border-color: var(--green);  background: var(--green); }
+
+/* Stats grid */
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+}
+
+.stat-cell {
+  background: var(--surface);
+  padding: 1.5rem;
+  position: relative;
+  transition: background 0.15s;
+}
+
+.stat-cell:hover { background: var(--surface-2); }
+
+.stat-cell-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.stat-cell-label::before {
+  content: '//';
+  color: var(--orange);
+  opacity: 0.6;
+}
+
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 3.2rem;
+  line-height: 1;
+  color: var(--white);
+}
+
+.stat-num .accent { color: var(--orange); }
+.stat-num .small  { font-size: 1.8rem; color: var(--muted); }
+
+/* System telemetry block */
+.telem-block {
+  border-top: 1px solid var(--border);
+  padding: 14px;
+}
+
+.telem-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.telem-row:last-child { border-bottom: none; }
+.telem-key   { color: var(--dim); letter-spacing: 0.06em; }
+.telem-val   { color: var(--cyan); }
+.telem-val.ok  { color: var(--green); }
+.telem-val.warn{ color: var(--orange); }
+
+/* Live indicator */
+.live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green);
+  padding: 4px 10px;
+  border: 1px solid rgba(34,197,94,0.3);
+  background: rgba(34,197,94,0.06);
+  margin-bottom: 1.75rem;
+  display: inline-flex;
+}
+
+.live-dot {
+  width: 5px; height: 5px;
+  background: var(--green);
+  animation: blink 1.5s steps(1) infinite;
+}
+
+/* ══════════════════════════
+   SHARED SECTION STYLES
+   ══════════════════════════ */
+section { position: relative; z-index: 1; }
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Section header */
+.section-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.section-tag::before {
+  content: '';
+  display: block;
+  width: 20px; height: 1px;
+  background: var(--orange);
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  margin-bottom: 0.75rem;
+}
+
+.section-desc {
+  color: var(--muted);
+  font-size: 0.9rem;
+  max-width: 520px;
+  line-height: 1.8;
+  letter-spacing: -0.005em;
+}
+
+/* Section divider */
+.section-divider {
+  padding: 8rem 0;
+  border-top: 1px solid var(--border);
+}
+
+/* ══════════════════════════
+   STACK / DATA BLOCKS
+   ══════════════════════════ */
+#stack { padding: 8rem 0; border-top: 1px solid var(--border); }
+
+.stack-header { margin-bottom: 3.5rem; }
+
+.stack-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+/* DATA BLOCK — core card style */
+.data-block {
+  background: var(--surface);
+  padding: 0;
+  position: relative;
+  transition: background 0.15s;
+}
+
+.data-block:hover { background: var(--surface-2); }
+
+/* Terminal-reveal border effect */
+.data-block::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  pointer-events: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  z-index: 2;
+}
+
+.data-block:hover::after {
+  border-color: var(--orange);
+  box-shadow: inset 0 0 0 0 transparent, 0 0 0 1px var(--orange);
+}
+
+/* Protocol badge */
+.block-protocol {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dim);
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.block-protocol span { color: var(--cyan); }
+
+.block-status-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: blink 2s steps(1) infinite;
+}
+
+.block-body { padding: 1.5rem; }
+
+.block-name {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.2rem;
+  line-height: 1;
+}
+
+.block-role {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--orange);
+  text-transform: uppercase;
+  margin-bottom: 0.85rem;
+}
+
+.block-desc {
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.65;
+  letter-spacing: -0.005em;
+  margin-bottom: 1rem;
+}
+
+.block-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--dim);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  padding-top: 0.85rem;
+}
+
+.block-meta .ok { color: var(--green); }
+
+/* ══════════════════════════
+   ARCHITECTURE
+   ══════════════════════════ */
+#architecture { padding: 8rem 0; border-top: 1px solid var(--border); }
+
+.arch-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+  margin-top: 3.5rem;
+}
+
+.arch-diagram {
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.arch-diagram-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--cyan);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.arch-diagram pre {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.75;
+  padding: 1.5rem;
+  overflow-x: auto;
+}
+
+.arch-diagram .node      { color: var(--white); font-weight: 600; }
+.arch-diagram .arrow     { color: var(--orange); }
+.arch-diagram .label     { color: var(--dim); font-size: 10px; }
+.arch-diagram .highlight { color: var(--cyan); }
+
+.arch-flow { display: flex; flex-direction: column; gap: 2px; }
+
+.flow-step {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1.1rem 1.4rem;
+  transition: border-color 0.15s, background 0.15s;
+  position: relative;
+}
+
+.flow-step::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  pointer-events: none;
+  transition: border-color 0.15s;
+}
+
+.flow-step:hover { background: var(--surface-2); }
+.flow-step:hover::after { border-color: var(--cyan); }
+
+.flow-num {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: rgba(249,115,22,0.35);
+  line-height: 1;
+  min-width: 26px;
+}
+
+.flow-title {
+  font-weight: 500;
+  font-size: 13px;
+  margin-bottom: 3px;
+  letter-spacing: -0.01em;
+}
+
+.flow-desc { color: var(--muted); font-size: 12px; line-height: 1.6; }
+
+/* ══════════════════════════
+   TEAM
+   ══════════════════════════ */
+#team { padding: 8rem 0; border-top: 1px solid var(--border); }
+
+.team-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 3.5rem;
+}
+
+.team-card {
+  background: var(--surface);
+  padding: 0;
+  position: relative;
+  transition: background 0.15s;
+}
+
+.team-card:hover { background: var(--surface-2); }
+
+.team-card-header {
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.team-card.infra   .team-card-header { color: var(--cyan); }
+.team-card.detect  .team-card-header { color: var(--orange); }
+
+.team-card-body { padding: 1.75rem 1.5rem; }
+
+.team-role {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 0.4rem;
+}
+
+.team-name {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.team-handle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--dim);
+  margin-bottom: 1.25rem;
+}
+
+.team-tasks { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+
+.team-tasks li {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 13px;
+  color: var(--muted);
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  letter-spacing: -0.005em;
+}
+
+.team-tasks li:last-child { border-bottom: none; }
+
+.team-tasks li::before {
+  content: '→';
+  font-family: var(--font-mono);
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.team-card.infra  .team-tasks li::before { color: var(--cyan); }
+.team-card.detect .team-tasks li::before { color: var(--orange); }
+
+/* ══════════════════════════
+   GUIDES / DATA BLOCKS
+   ══════════════════════════ */
+#guides { padding: 8rem 0; border-top: 1px solid var(--border); }
+
+.guides-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 3.5rem;
+}
+
+.guide-card {
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  padding: 0;
+  position: relative;
+  transition: background 0.15s;
+}
+
+/* Terminal reveal on hover */
+.guide-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid transparent;
+  pointer-events: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  z-index: 2;
+}
+
+.guide-card:nth-child(1):hover::after {
+  border-color: var(--orange);
+  box-shadow: inset 0 0 24px rgba(249,115,22,0.04), 0 0 0 1px var(--orange);
+}
+
+.guide-card:nth-child(2):hover::after {
+  border-color: var(--cyan);
+  box-shadow: inset 0 0 24px rgba(6,182,212,0.04), 0 0 0 1px var(--cyan);
+}
+
+.guide-card:hover { background: var(--surface-2); }
+
+.guide-card-header {
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.guide-card:nth-child(1) .guide-card-header { color: var(--orange); }
+.guide-card:nth-child(2) .guide-card-header { color: var(--cyan); }
+
+.guide-doc-id {
+  color: var(--dim);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+.guide-card-body { padding: 1.75rem 1.5rem; }
+
+.guide-num-bg {
+  font-family: var(--font-display);
+  font-size: 7rem;
+  line-height: 1;
+  color: rgba(255,255,255,0.025);
+  float: right;
+  margin: -0.5rem -0.5rem 0 0;
+  letter-spacing: -0.02em;
+  pointer-events: none;
+}
+
+.guide-title {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.5rem;
+}
+
+.guide-desc {
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.005em;
+  max-width: 440px;
+}
+
+.guide-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 1.25rem;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  background: rgba(255,255,255,0.04);
+  color: var(--dim);
+  border: 1px solid var(--border);
+}
+
+.guide-card:nth-child(1):hover .tag { border-color: rgba(249,115,22,0.25); color: var(--orange); }
+.guide-card:nth-child(2):hover .tag { border-color: rgba(6,182,212,0.25);  color: var(--cyan); }
+
+.guide-cta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.guide-card:nth-child(1) .guide-cta { color: var(--orange); }
+.guide-card:nth-child(2) .guide-cta { color: var(--cyan); }
+
+/* ══════════════════════════
+   CHALLENGES
+   ══════════════════════════ */
+#challenges { padding: 8rem 0; border-top: 1px solid var(--border); }
+
+.challenges-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 3.5rem;
+}
+
+.challenge {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  background: var(--surface);
+  transition: background 0.15s;
+  position: relative;
+}
+
+.challenge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  pointer-events: none;
+  transition: border-color 0.15s;
+}
+
+.challenge:hover { background: var(--surface-2); }
+.challenge:hover::after { border-color: rgba(249,115,22,0.3); }
+
+.challenge-index {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1.5rem 0.5rem;
+  border-right: 1px solid var(--border);
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  color: rgba(249,115,22,0.25);
+  line-height: 1;
+}
+
+.challenge-body { padding: 1.5rem 1.75rem; }
+
+.challenge-protocol {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--orange);
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.challenge-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.challenge-desc {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  letter-spacing: -0.005em;
+}
+
+.challenge-lesson {
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--cyan);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  letter-spacing: 0.04em;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: rgba(255,255,255,0.06);
+  color: var(--cyan);
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+}
+
+/* ══════════════════════════
+   CODE BLOCK — IDE STYLE
+   ══════════════════════════ */
+.code-block {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  position: relative;
+}
+
+.code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.code-filepath {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.code-filepath .path-sep { color: var(--dim); }
+.code-filepath .filename  { color: var(--orange); }
+
+.copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.1s;
+  user-select: none;
+}
+
+.copy-btn:hover   { border-color: var(--orange); color: var(--orange); }
+.copy-btn:active  { transform: translateY(1px); background: var(--orange); color: var(--void); }
+.copy-btn.copied  { border-color: var(--green); color: var(--green); }
+
+.copy-btn-indicator {
+  width: 6px; height: 6px;
+  border: 1px solid currentColor;
+  position: relative;
+}
+
+.copy-btn-indicator::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: currentColor;
+  transition: opacity 0.1s;
+}
+
+.copy-btn:not(.copied) .copy-btn-indicator::before { opacity: 0; }
+
+.code-content {
+  padding: 1.25rem 1.5rem;
+  color: var(--muted);
+  line-height: 1.8;
+  overflow-x: auto;
+}
+
+.code-content .kw   { color: var(--orange); }
+.code-content .str  { color: var(--green); }
+.code-content .cmt  { color: var(--dim); }
+.code-content .num  { color: var(--cyan); }
+.code-content .tag  { color: #a78bfa; }
+
+/* ══════════════════════════
+   FOOTER
+   ══════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-logo {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--dim);
+  text-decoration: none;
+}
+
+.footer-logo .bracket { color: var(--orange); }
+
+.footer-links {
+  display: flex;
+  gap: 0;
+  list-style: none;
+}
+
+.footer-links a {
+  color: var(--dim);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border-right: 1px solid var(--border);
+  transition: color 0.15s;
+}
+
+.footer-links li:first-child a { border-left: 1px solid var(--border); }
+.footer-links a:hover { color: var(--cyan); }
+
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 0.06em;
+}
+
+/* ── TOPOLOGY FULL-WIDTH ── */
+.topo-wrap { margin-top: 3.5rem; }
+
+.arch-flow-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 2px;
+}
+
+.arch-flow-row .flow-step { flex-direction: column; gap: 0.6rem; padding: 1.1rem; }
+.arch-flow-row .flow-num  { font-size: 1.8rem; color: rgba(249,115,22,0.2); }
+
+/* ══════════════════════════
+   DASHBOARD SECTION
+   ══════════════════════════ */
+#dashboard { padding: 8rem 0; border-top: 1px solid var(--border); }
+
+.screenshot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 3.5rem;
+}
+
+.screenshot-card {
+  background: var(--surface);
+  padding: 0;
+  position: relative;
+  transition: background 0.15s;
+}
+
+.screenshot-card:hover { background: var(--surface-2); }
+
+.screenshot-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  pointer-events: none;
+  transition: border-color 0.15s;
+  z-index: 2;
+}
+
+.screenshot-card:hover::after { border-color: var(--cyan); }
+
+.screenshot-header {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.screenshot-badge {
+  font-size: 8px;
+  color: var(--dim);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+}
+
+.screenshot-mock {
+  aspect-ratio: 16/9;
+  background: var(--void);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.screenshot-mock::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(6,182,212,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6,182,212,0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Actual screenshot image */
+.screenshot-mock img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 2;
+}
+
+.screenshot-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  z-index: 1;
+}
+
+.screenshot-placeholder-icon {
+  width: 40px; height: 40px;
+  border: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.screenshot-placeholder-text {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--dim);
+  text-align: center;
+  line-height: 1.9;
+  text-transform: uppercase;
+}
+
+.screenshot-meta {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.screenshot-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.3rem;
+}
+
+.screenshot-desc {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.65;
+  letter-spacing: -0.005em;
+}
+
+.upload-notice {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 12px 18px;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 0.08em;
+}
+
+.upload-notice .notice-tag {
+  color: var(--orange);
+  background: rgba(249,115,22,0.08);
+  border: 1px solid rgba(249,115,22,0.2);
+  padding: 2px 8px;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+/* ══════════════════════════
+   ANIMATIONS
+   ══════════════════════════ */
+.fade-up {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Terminal cursor blink on section labels */
+.section-tag::after {
+  content: '▮';
+  color: var(--orange);
+  opacity: 0;
+  animation: blink 1.2s steps(1) infinite;
+  font-size: 8px;
+  margin-left: 4px;
+}
+
+/* ══════════════════════════
+   RESPONSIVE
+   ══════════════════════════ */
+@media (max-width: 960px) {
+  .status-bar { display: none; }
+  nav { top: 0; padding: 0 1.25rem; }
+  nav { height: 50px; }
+  .nav-links { display: none; }
+  #hero { padding: 80px 1.25rem 4rem; }
+  .hero-content { grid-template-columns: 1fr; gap: 3rem; }
+  .hero-corner { display: none; }
+  .container { padding: 0 1.25rem; }
+  .stack-grid   { grid-template-columns: 1fr 1fr; }
+  .arch-layout  { grid-template-columns: 1fr; }
+  .team-grid    { grid-template-columns: 1fr; }
+  .guides-grid  { grid-template-columns: 1fr; }
+  .screenshot-grid { grid-template-columns: 1fr; }
+  .arch-flow-row { grid-template-columns: 1fr 1fr; }
+  .challenge    { grid-template-columns: 1fr; }
+  .challenge-index { display: none; }
+  .footer-inner { flex-direction: column; gap: 1.25rem; text-align: center; }
+  .footer-links a { padding: 8px 10px; }
+}
+
+@media (max-width: 600px) {
+  .stack-grid { grid-template-columns: 1fr; }
+  h1 { font-size: 3.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════ SYSTEM STATUS BAR ════════════ -->
+<div class="status-bar">
+  <div class="status-bar-left">
+    <div class="status-item active">
+      <span class="status-pulse"></span>
+      <span class="key">NODE_STATUS:</span>
+      <span class="val">ACTIVE</span>
+    </div>
+    <div class="status-item">
+      <span class="key">DOC_VER:</span>
+      <span class="val">1.0.4</span>
+    </div>
+    <div class="status-item">
+      <span class="key">LOCATION:</span>
+      <span class="val">HOME_LAB</span>
+    </div>
+    <div class="status-item">
+      <span class="key">PLATFORM:</span>
+      <span class="val">FEDORA_42</span>
+    </div>
+  </div>
+  <div class="status-bar-right">
+    <div class="status-item active">
+      <span class="key">WAZUH:</span>
+      <span class="val">v4.9 // RUNNING</span>
+    </div>
+    <div class="status-item active">
+      <span class="key">IDS:</span>
+      <span class="val">SURICATA // ACTIVE</span>
+    </div>
+    <div class="status-item">
+      <span class="key">ALERTS_INDEXED:</span>
+      <span class="val">600+</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ NAV ════════════ -->
+<nav>
+  <a href="#" class="nav-logo">
+    <span class="nav-logo-bracket">[</span>
+    <span class="nav-logo-name">SOC_HOME_LAB</span>
+    <span class="nav-logo-bracket">]</span>
+    <span class="nav-logo-version">v1.0.4</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#guides">Guides</a></li>
+    <li><a href="#challenges">Challenges</a></li>
+    <li><a href="#dashboard">Dashboard</a></li>
+    <li><a href="https://github.com/kat2120/SOCHomeLab" target="_blank" class="nav-cta">GitHub →</a></li>
+  </ul>
+</nav>
+
+<!-- ════════════ HERO ════════════ -->
+<section id="hero">
+  <div class="hero-crosshair"></div>
+  <div class="hero-corner tl"></div>
+  <div class="hero-corner tr"></div>
+  <div class="hero-corner bl"></div>
+  <div class="hero-corner br"></div>
+
+  <div class="hero-content">
+    <!-- Left: Heading block -->
+    <div>
+      <div class="live-indicator">
+        <span class="live-dot"></span>
+        SYSTEM OPERATIONAL
+      </div>
+
+      <div class="hero-classify">
+        <span class="classify-tag">UNCLASSIFIED</span>
+        <span class="classify-divider">|</span>
+        CYBERSECURITY HOME LAB PROJECT
+      </div>
+
+      <h1>
+        HOME<br>
+        <span class="line-accent">SECURITY</span><br>
+        <span class="line-outline">OPERATIONS</span><br>
+        <span class="line-cyan">CENTER</span>
+      </h1>
+
+      <p class="hero-desc">
+        A fully self-hosted SOC running on a Fedora 42 Linux mini PC. Detects network
+        intrusions, monitors endpoints in real time, and delivers threat intelligence —
+        built entirely on open-source tools used in enterprise security operations.
+      </p>
+
+      <div class="hero-actions">
+        <a href="https://github.com/kat2120/SOCHomeLab" target="_blank" class="btn-primary">
+          VIEW_REPO →
+        </a>
+        <a href="#guides" class="btn-ghost">
+          READ_DOCS
+        </a>
+      </div>
+    </div>
+
+    <!-- Right: Data panel -->
+    <div class="hero-panel">
+      <div class="panel-header">
+        <span class="panel-header-title">[ SYSTEM_TELEMETRY // LIVE ]</span>
+        <div class="panel-header-dots">
+          <div class="panel-dot red"></div>
+          <div class="panel-dot warn"></div>
+          <div class="panel-dot ok"></div>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-cell">
+          <div class="stat-cell-label">Total Cost</div>
+          <div class="stat-num"><span class="accent">$</span>0</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-cell-label">Endpoints</div>
+          <div class="stat-num">2<span class="small"> nodes</span></div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-cell-label">Tools Deployed</div>
+          <div class="stat-num">7<span class="accent">+</span></div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-cell-label">Uptime</div>
+          <div class="stat-num"><span class="accent">24</span><span class="small">/7</span></div>
+        </div>
+      </div>
+
+      <div class="telem-block">
+        <div class="telem-row">
+          <span class="telem-key">HOST</span>
+          <span class="telem-val">intel-nuc-192.168.1.33</span>
+        </div>
+        <div class="telem-row">
+          <span class="telem-key">OS</span>
+          <span class="telem-val ok">Fedora Linux 42 // x86_64</span>
+        </div>
+        <div class="telem-row">
+          <span class="telem-key">WAZUH_MGR</span>
+          <span class="telem-val ok">v4.9 // RUNNING</span>
+        </div>
+        <div class="telem-row">
+          <span class="telem-key">SURICATA</span>
+          <span class="telem-val ok">IDS // ACTIVE</span>
+        </div>
+        <div class="telem-row">
+          <span class="telem-key">AGENT_STATUS</span>
+          <span class="telem-val ok">ThinkPad T14 // CONNECTED</span>
+        </div>
+        <div class="telem-row">
+          <span class="telem-key">SSH_PORT</span>
+          <span class="telem-val warn">7389 // KEY_AUTH_ONLY</span>
+        </div>
+        <div class="telem-row">
+          <span class="telem-key">INDEXER</span>
+          <span class="telem-val">OpenSearch // 600+ docs</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ STACK ════════════ -->
+<section id="stack">
+  <div class="container">
+    <div class="stack-header fade-up">
+      <div class="section-tag">Technology Stack</div>
+      <h2>The Full Stack</h2>
+      <p class="section-desc">Every tool is free and open-source — the same stack deployed in enterprise SOCs worldwide.</p>
+    </div>
+
+    <div class="stack-grid fade-up">
+
+      <div class="data-block">
+        <div class="block-protocol">[ LAYER: HOST_DETECTION ] <span>HIDS + SIEM</span> <div class="block-status-dot"></div></div>
+        <div class="block-body">
+          <div class="block-name">Wazuh</div>
+          <div class="block-role">// HIDS + SIEM Engine</div>
+          <div class="block-desc">Host-based intrusion detection across both machines. Monitors logins, file integrity, running processes, and auto-maps every alert to MITRE ATT&CK and compliance frameworks.</div>
+          <div class="block-meta"><span class="ok">● ACTIVE</span> Intel NUC · v4.9</div>
+        </div>
+      </div>
+
+      <div class="data-block">
+        <div class="block-protocol">[ LAYER: NETWORK_IDS ] <span>SIGNATURE ENGINE</span> <div class="block-status-dot"></div></div>
+        <div class="block-body">
+          <div class="block-name">Suricata</div>
+          <div class="block-role">// Network IDS</div>
+          <div class="block-desc">Inspects all traffic using 40,000+ Emerging Threats community rules plus custom local rulesets. Outputs structured JSON for consumption by the Python alert engine.</div>
+          <div class="block-meta"><span class="ok">● ACTIVE</span> NUC interface · ET Rules</div>
+        </div>
+      </div>
+
+      <div class="data-block">
+        <div class="block-protocol">[ LAYER: ALERT_PIPELINE ] <span>CUSTOM ENGINE</span> <div class="block-status-dot"></div></div>
+        <div class="block-body">
+          <div class="block-name">Python</div>
+          <div class="block-role">// Alert Engine</div>
+          <div class="block-desc">Real-time log tailer that filters by severity, enriches critical alerts with VirusTotal IP reputation data, and fires Telegram push notifications within seconds of detection.</div>
+          <div class="block-meta"><span class="ok">● RUNNING</span> systemd service</div>
+        </div>
+      </div>
+
+      <div class="data-block">
+        <div class="block-protocol">[ LAYER: NOTIFICATION ] <span>PUSH DELIVERY</span> <div class="block-status-dot"></div></div>
+        <div class="block-body">
+          <div class="block-name">Telegram</div>
+          <div class="block-role">// Alert Delivery</div>
+          <div class="block-desc">Real-time push notifications to both operator phones within seconds. Each alert includes severity, source IP, destination, MITRE technique ID, and VirusTotal score.</div>
+          <div class="block-meta"><span class="ok">● BOT ACTIVE</span> Dual recipients</div>
+        </div>
+      </div>
+
+      <div class="data-block">
+        <div class="block-protocol">[ LAYER: INDEXER ] <span>SEARCH + STORAGE</span> <div class="block-status-dot"></div></div>
+        <div class="block-body">
+          <div class="block-name">OpenSearch</div>
+          <div class="block-role">// Alert Index</div>
+          <div class="block-desc">Wazuh's indexer stores every alert in a fully searchable document store. Filebeat ships alerts continuously from log files for historical analysis and dashboard visualization.</div>
+          <div class="block-meta"><span class="ok">● INDEXED</span> 600+ documents</div>
+        </div>
+      </div>
+
+      <div class="data-block">
+        <div class="block-protocol">[ LAYER: BASE_OS ] <span>HARDENED SERVER</span> <div class="block-status-dot"></div></div>
+        <div class="block-body">
+          <div class="block-name">Fedora 42</div>
+          <div class="block-role">// Base OS</div>
+          <div class="block-desc">Always-on Intel NUC mini PC. Hardened with key-based SSH on custom port 7389, root login disabled, firewalld rules active, and automatic security updates enabled.</div>
+          <div class="block-meta"><span class="ok">● HARDENED</span> NUC + ThinkPad T14</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ ARCHITECTURE ════════════ -->
+<section id="architecture">
+  <div class="container">
+    <div class="fade-up">
+      <div class="section-tag">System Design</div>
+      <h2>Architecture</h2>
+      <p class="section-desc">Two machines, one centralized SOC. Network and host detection working in parallel.</p>
+    </div>
+
+    <!-- SVG Topology -->
+    <div class="topo-wrap fade-up">
+      <div class="arch-diagram-header" style="border:1px solid var(--border);border-bottom:none;">
+        <span>[ TOPOLOGY // DATA FLOW ]</span>
+        <span style="color:var(--dim);font-size:9px;">SVG_RENDER v2.0</span>
+      </div>
+      <div style="border:1px solid var(--border);background:var(--surface);padding:2rem 1rem 1.5rem;">
+        <svg viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+          <defs>
+            <!-- Animated flow dots -->
+            <marker id="arr-orange" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#f97316"/>
+            </marker>
+            <marker id="arr-cyan" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#06b6d4"/>
+            </marker>
+            <marker id="arr-green" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#22c55e"/>
+            </marker>
+            <marker id="arr-dim" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#4b5563"/>
+            </marker>
+            <!-- Glow filters -->
+            <filter id="glow-orange" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="glow-cyan" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <!-- Dash animate -->
+            <style>
+              .flow-line { stroke-dasharray: 6 4; animation: dash 1.6s linear infinite; }
+              .flow-line-slow { stroke-dasharray: 6 4; animation: dash 2.4s linear infinite; }
+              @keyframes dash { to { stroke-dashoffset: -20; } }
+              .node-pulse { animation: npulse 2s ease-in-out infinite; }
+              @keyframes npulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+            </style>
+          </defs>
+
+          <!-- ── INTERNET CLOUD (top) ── -->
+          <ellipse cx="450" cy="38" rx="90" ry="22" fill="none" stroke="#4b5563" stroke-width="1" stroke-dasharray="4 3"/>
+          <text x="450" y="34" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#4b5563" letter-spacing="2">INTERNET</text>
+          <text x="450" y="48" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#374151">WAN TRAFFIC</text>
+
+          <!-- ── NUC CONTAINER ── -->
+          <rect x="120" y="76" width="660" height="270" fill="rgba(249,115,22,0.03)" stroke="#f97316" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="136" y="69" font-family="JetBrains Mono,monospace" font-size="9" fill="#f97316" letter-spacing="2">INTEL NUC // 192.168.1.33 // FEDORA 42</text>
+
+          <!-- Internet → NUC line -->
+          <line x1="450" y1="60" x2="450" y2="96" stroke="#4b5563" stroke-width="1" marker-end="url(#arr-dim)"/>
+
+          <!-- ── SURICATA NODE ── -->
+          <rect x="148" y="106" width="148" height="62" fill="#0f1117" stroke="#f97316" stroke-width="1"/>
+          <text x="156" y="122" font-family="JetBrains Mono,monospace" font-size="9" fill="#f97316" letter-spacing="1.5">[ NET_IDS ]</text>
+          <text x="156" y="141" font-family="Bebas Neue,sans-serif" font-size="20" fill="#f1f3f5" letter-spacing="2">SURICATA</text>
+          <text x="156" y="158" font-family="JetBrains Mono,monospace" font-size="9" fill="#4b5563">40k+ ET rules · custom sigs</text>
+          <circle cx="285" cy="111" r="3" fill="#22c55e" class="node-pulse"/>
+
+          <!-- ── WAZUH MANAGER NODE ── -->
+          <rect x="376" y="106" width="168" height="62" fill="#0f1117" stroke="#f97316" stroke-width="1"/>
+          <text x="384" y="122" font-family="JetBrains Mono,monospace" font-size="9" fill="#f97316" letter-spacing="1.5">[ HIDS_MGR ]</text>
+          <text x="384" y="141" font-family="Bebas Neue,sans-serif" font-size="20" fill="#f1f3f5" letter-spacing="2">WAZUH MGR</text>
+          <text x="384" y="158" font-family="JetBrains Mono,monospace" font-size="9" fill="#4b5563">v4.9 · MITRE ATT&CK maps</text>
+          <circle cx="533" cy="111" r="3" fill="#22c55e" class="node-pulse"/>
+
+          <!-- Suricata → Filebeat -->
+          <line x1="222" y1="168" x2="222" y2="210" stroke="#f97316" stroke-width="1.5" marker-end="url(#arr-orange)" class="flow-line"/>
+
+          <!-- Wazuh → Filebeat -->
+          <line x1="460" y1="168" x2="390" y2="210" stroke="#f97316" stroke-width="1.5" marker-end="url(#arr-orange)" class="flow-line"/>
+
+          <!-- ── FILEBEAT NODE ── -->
+          <rect x="296" y="210" width="148" height="62" fill="#0f1117" stroke="#06b6d4" stroke-width="1"/>
+          <text x="304" y="226" font-family="JetBrains Mono,monospace" font-size="9" fill="#06b6d4" letter-spacing="1.5">[ LOG_SHIP ]</text>
+          <text x="304" y="245" font-family="Bebas Neue,sans-serif" font-size="20" fill="#f1f3f5" letter-spacing="2">FILEBEAT</text>
+          <text x="304" y="262" font-family="JetBrains Mono,monospace" font-size="9" fill="#4b5563">ships JSON → OpenSearch</text>
+          <circle cx="433" cy="215" r="3" fill="#22c55e" class="node-pulse"/>
+
+          <!-- Filebeat → OpenSearch -->
+          <line x1="370" y1="272" x2="370" y2="314" stroke="#06b6d4" stroke-width="1.5" marker-end="url(#arr-cyan)" class="flow-line"/>
+
+          <!-- ── OPENSEARCH NODE ── -->
+          <rect x="296" y="314" width="148" height="62" fill="#0f1117" stroke="#06b6d4" stroke-width="1"/>
+          <text x="304" y="330" font-family="JetBrains Mono,monospace" font-size="9" fill="#06b6d4" letter-spacing="1.5">[ INDEXER ]</text>
+          <text x="304" y="349" font-family="Bebas Neue,sans-serif" font-size="20" fill="#f1f3f5" letter-spacing="2">OPENSEARCH</text>
+          <text x="304" y="366" font-family="JetBrains Mono,monospace" font-size="9" fill="#4b5563">600+ alerts · full-text search</text>
+          <circle cx="433" cy="319" r="3" fill="#22c55e" class="node-pulse"/>
+
+          <!-- OpenSearch → Wazuh Dashboard -->
+          <line x1="296" y1="355" x2="236" y2="390" stroke="#06b6d4" stroke-width="1.5" marker-end="url(#arr-cyan)" class="flow-line-slow"/>
+
+          <!-- OpenSearch → Python Engine -->
+          <line x1="444" y1="376" x2="560" y2="390" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arr-green)" class="flow-line-slow"/>
+
+          <!-- ── WAZUH DASHBOARD NODE ── -->
+          <rect x="148" y="390" width="160" height="58" fill="#0f1117" stroke="#06b6d4" stroke-width="1"/>
+          <text x="156" y="406" font-family="JetBrains Mono,monospace" font-size="9" fill="#06b6d4" letter-spacing="1.5">[ DASHBOARD ]</text>
+          <text x="156" y="425" font-family="Bebas Neue,sans-serif" font-size="18" fill="#f1f3f5" letter-spacing="2">WAZUH UI</text>
+          <text x="156" y="440" font-family="JetBrains Mono,monospace" font-size="9" fill="#4b5563">OpenSearch Dashboards</text>
+          <circle cx="297" cy="395" r="3" fill="#22c55e" class="node-pulse"/>
+
+          <!-- ── PYTHON ENGINE NODE ── -->
+          <rect x="556" y="390" width="196" height="58" fill="#0f1117" stroke="#22c55e" stroke-width="1"/>
+          <text x="564" y="406" font-family="JetBrains Mono,monospace" font-size="9" fill="#22c55e" letter-spacing="1.5">[ ALERT_ENGINE ]</text>
+          <text x="564" y="425" font-family="Bebas Neue,sans-serif" font-size="18" fill="#f1f3f5" letter-spacing="2">PYTHON + TELEGRAM</text>
+          <text x="564" y="440" font-family="JetBrains Mono,monospace" font-size="9" fill="#4b5563">VirusTotal · push notify</text>
+          <circle cx="741" cy="395" r="3" fill="#22c55e" class="node-pulse"/>
+
+          <!-- ── THINKPAD CONTAINER ── -->
+          <!-- Agent line comes from outside NUC box -->
+          <line x1="460" y1="137" x2="460" y2="76" stroke="#22c55e" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arr-green)"/>
+          <!-- ThinkPad box -->
+          <rect x="340" y="2" width="240" height="0" fill="none"/> <!-- placeholder, draw outside -->
+
+          <!-- External ThinkPad box below the NUC -->
+          <!-- We'll position it at top, feeding into NUC via agent arrow -->
+          <!-- Label on the wire -->
+          <text x="468" y="90" font-family="JetBrains Mono,monospace" font-size="8" fill="#22c55e" letter-spacing="1">WAZUH AGENT</text>
+
+          <!-- ThinkPad is at the top left -->
+          <!-- Actually let's put ThinkPad on right side outside the NUC -->
+          <rect x="756" y="106" width="128" height="62" fill="#0f1117" stroke="#22c55e" stroke-width="1"/>
+          <text x="763" y="122" font-family="JetBrains Mono,monospace" font-size="9" fill="#22c55e" letter-spacing="1.2">[ ENDPOINT ]</text>
+          <text x="763" y="140" font-family="Bebas Neue,sans-serif" font-size="17" fill="#f1f3f5" letter-spacing="1">THINKPAD T14</text>
+          <text x="763" y="155" font-family="JetBrains Mono,monospace" font-size="9" fill="#4b5563">192.168.1.185</text>
+          <text x="763" y="166" font-family="JetBrains Mono,monospace" font-size="8" fill="#374151">Fedora 42</text>
+          <circle cx="878" cy="111" r="3" fill="#22c55e" class="node-pulse"/>
+
+          <!-- ThinkPad → Wazuh Manager (agent connection) -->
+          <line x1="756" y1="137" x2="544" y2="137" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arr-green)" class="flow-line-slow"/>
+          <text x="620" y="130" font-family="JetBrains Mono,monospace" font-size="8" fill="#22c55e" letter-spacing="1">AGENT</text>
+
+          <!-- Legend -->
+          <line x1="148" y1="460" x2="172" y2="460" stroke="#f97316" stroke-width="1.5"/>
+          <text x="178" y="464" font-family="JetBrains Mono,monospace" font-size="9" fill="#4b5563">Alert pipeline</text>
+          <line x1="280" y1="460" x2="304" y2="460" stroke="#06b6d4" stroke-width="1.5"/>
+          <text x="310" y="464" font-family="JetBrains Mono,monospace" font-size="9" fill="#4b5563">Index pipeline</text>
+          <line x1="412" y1="460" x2="436" y2="460" stroke="#22c55e" stroke-width="1.5"/>
+          <text x="442" y="464" font-family="JetBrains Mono,monospace" font-size="9" fill="#4b5563">Agent / notify</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Flow steps -->
+    <div class="arch-flow-row fade-up">
+      <div class="flow-step">
+        <div class="flow-num">01</div>
+        <div>
+          <div class="flow-title">Traffic hits Suricata</div>
+          <div class="flow-desc">All NUC network traffic inspected against 40,000+ Emerging Threats rules plus custom local rulesets.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">02</div>
+        <div>
+          <div class="flow-title">Wazuh catches host events</div>
+          <div class="flow-desc">ThinkPad agent ships every login, sudo command, and file change to the NUC manager in real time.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">03</div>
+        <div>
+          <div class="flow-title">Alerts indexed</div>
+          <div class="flow-desc">Filebeat ships into OpenSearch — stored, searchable, and tagged with MITRE ATT&CK techniques.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">04</div>
+        <div>
+          <div class="flow-title">Python filters and enriches</div>
+          <div class="flow-desc">Alert engine reads JSON log stream, drops low-severity noise, queries VirusTotal on suspicious IPs.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">05</div>
+        <div>
+          <div class="flow-title">Telegram delivers instantly</div>
+          <div class="flow-desc">Critical alerts reach both phones within seconds — with context, severity, and threat intelligence.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ TEAM ════════════ -->
+<section id="team">
+  <div class="container">
+    <div class="fade-up">
+      <div class="section-tag">Contributors</div>
+      <h2>The Team</h2>
+      <p class="section-desc">Two roles, clearly divided — infrastructure and detection running in parallel.</p>
+    </div>
+
+    <div class="team-grid fade-up">
+      <div class="team-card infra">
+        <div class="team-card-header">[ ROLE: INFRASTRUCTURE_ENGINEER // NODE_A ]</div>
+        <div class="team-card-body">
+          <div class="team-role">Operator</div>
+          <div class="team-name">Kathlyn</div>
+          <div class="team-handle">@kat2120 · Infrastructure & Operations</div>
+          <ul class="team-tasks">
+            <li>Fedora 42 server setup and system hardening</li>
+            <li>Wazuh HIDS — manager, indexer, dashboard</li>
+            <li>SSL certificate bootstrapping and PKI config</li>
+            <li>SSH hardening — custom port 7389, key-based auth</li>
+            <li>Firewall configuration with firewalld</li>
+            <li>Filebeat pipeline to OpenSearch</li>
+            <li>Wazuh agent deployment on ThinkPad endpoint</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="team-card detect">
+        <div class="team-card-header">[ ROLE: DETECTION_ENGINEER // NODE_B ]</div>
+        <div class="team-card-body">
+          <div class="team-role">Operator</div>
+          <div class="team-name">Richard</div>
+          <div class="team-handle">@richard · Detection & Response</div>
+          <ul class="team-tasks">
+            <li>Suricata IDS installation and performance tuning</li>
+            <li>Custom Suricata detection rule authoring</li>
+            <li>Python alert engine development</li>
+            <li>VirusTotal API integration and enrichment</li>
+            <li>Telegram bot and notification formatting</li>
+            <li>Malware sample analysis and write-ups</li>
+            <li>MITRE ATT&CK technique mapping</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ GUIDES ════════════ -->
+<section id="guides">
+  <div class="container">
+    <div class="fade-up">
+      <div class="section-tag">Documentation</div>
+      <h2>Setup Guides</h2>
+      <p class="section-desc">Full step-by-step field manuals. Reproduce this entire setup from scratch.</p>
+    </div>
+
+    <div class="guides-grid fade-up">
+      <a href="infrastructure-guide.html" class="guide-card">
+        <div class="guide-card-header">
+          <span>[ PROTOCOL: WAZUH // FEDORA // SSH ]</span>
+          <span class="guide-doc-id">DOC-001</span>
+        </div>
+        <div class="guide-card-body">
+          <div class="guide-num-bg">01</div>
+          <div class="guide-title">Infrastructure Guide</div>
+          <div class="guide-desc">Complete walkthrough — bare Fedora to fully operational Wazuh stack. Covers SSH hardening, SSL cert bootstrapping, Filebeat pipeline, and health verification.</div>
+          <div class="guide-tags">
+            <span class="tag">Fedora 42</span>
+            <span class="tag">Wazuh 4.9</span>
+            <span class="tag">Filebeat</span>
+            <span class="tag">OpenSearch</span>
+            <span class="tag">firewalld</span>
+          </div>
+          <div class="guide-cta">ACCESS_DOC →</div>
+        </div>
+      </a>
+
+      <a href="detection-guide.html" class="guide-card">
+        <div class="guide-card-header">
+          <span>[ PROTOCOL: SURICATA // PYTHON // MITRE ]</span>
+          <span class="guide-doc-id">DOC-002</span>
+        </div>
+        <div class="guide-card-body">
+          <div class="guide-num-bg">02</div>
+          <div class="guide-title">Detection Guide</div>
+          <div class="guide-desc">Full detection pipeline — Suricata installation, custom rule writing, Python alert engine, VirusTotal integration, Telegram bot setup, and malware analysis methodology.</div>
+          <div class="guide-tags">
+            <span class="tag">Suricata</span>
+            <span class="tag">Python</span>
+            <span class="tag">VirusTotal</span>
+            <span class="tag">Telegram</span>
+            <span class="tag">MITRE ATT&CK</span>
+          </div>
+          <div class="guide-cta">ACCESS_DOC →</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ CHALLENGES ════════════ -->
+<section id="challenges">
+  <div class="container">
+    <div class="fade-up">
+      <div class="section-tag">Real Experience</div>
+      <h2>Challenges Solved</h2>
+      <p class="section-desc">We didn't follow a tutorial. Here's what actually broke and how we fixed it.</p>
+    </div>
+
+    <div class="challenges-list fade-up">
+
+      <div class="challenge">
+        <div class="challenge-index">01</div>
+        <div class="challenge-body">
+          <div class="challenge-protocol">[ SUBSYSTEM: SSL_PKI // WAZUH_CERTS ]</div>
+          <div class="challenge-title">SSL Certificate Bootstrapping</div>
+          <div class="challenge-desc">The all-in-one installer exited early because the manager was already partially installed, leaving the indexer, dashboard, and Filebeat without SSL certificates. Diagnosed from OpenSearch error logs, ran <code>wazuh-certs-tool.sh</code> manually, and placed each cert with exact ownership and permissions.</div>
+          <div class="challenge-lesson">// LESSON: Always run the Wazuh installer on a completely clean system.</div>
+        </div>
+      </div>
+
+      <div class="challenge">
+        <div class="challenge-index">02</div>
+        <div class="challenge-body">
+          <div class="challenge-protocol">[ SUBSYSTEM: CONFIG_PARSING // XML_VALIDATION ]</div>
+          <div class="challenge-title">ossec.conf XML Corruption</div>
+          <div class="challenge-desc">Config file had two issues — a mismatched closing tag on line 26 and a duplicate <code>&lt;ossec_config&gt;</code> root element inside the cluster block with a missing closing tag. Used Python's XML parser to identify exact line numbers, repaired the file with targeted sed and Python scripts.</div>
+          <div class="challenge-lesson">// LESSON: Always validate XML config files before restarting services. Always keep a backup.</div>
+        </div>
+      </div>
+
+      <div class="challenge">
+        <div class="challenge-index">03</div>
+        <div class="challenge-body">
+          <div class="challenge-protocol">[ SUBSYSTEM: TLS // CERTIFICATE_BINDING ]</div>
+          <div class="challenge-title">Filebeat Certificate Mismatch</div>
+          <div class="challenge-desc">Filebeat failed with <code>x509: certificate valid for 192.168.1.33, not 127.0.0.1</code>. SSL certificate generated for the server's actual IP but the Filebeat config pointed to localhost. Diagnosed from reading the exact error message.</div>
+          <div class="challenge-lesson">// LESSON: Never use 127.0.0.1 when certs are generated for a specific IP address.</div>
+        </div>
+      </div>
+
+      <div class="challenge">
+        <div class="challenge-index">04</div>
+        <div class="challenge-body">
+          <div class="challenge-protocol">[ SUBSYSTEM: OPENSEARCH // INDEX_MAPPING ]</div>
+          <div class="challenge-title">OpenSearch Field Mapping Conflicts</div>
+          <div class="challenge-desc">Dashboard panels threw <code>illegal_argument_exception</code> because fields like <code>agent.name</code> were mapped as text instead of keyword type, preventing aggregation. Existing indices can't be remapped — fixed by applying a correct index template so all future daily indices are created with proper field types.</div>
+          <div class="challenge-lesson">// LESSON: Apply index templates before data starts flowing, not after.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ DASHBOARD ════════════ -->
+<section id="dashboard">
+  <div class="container">
+    <div class="fade-up">
+      <div class="section-tag">Screenshot Documentation</div>
+      <h2>Dashboard Views</h2>
+      <p class="section-desc">Live captures from the Wazuh dashboard, OpenSearch, and Suricata alert feeds. Replace placeholders with your actual screenshots.</p>
+    </div>
+
+    <div class="screenshot-grid fade-up">
+
+      <div class="screenshot-card">
+        <div class="screenshot-header">
+          <span>[ WAZUH // SECURITY_EVENTS_OVERVIEW ]</span>
+          <span class="screenshot-badge">IMG-001</span>
+        </div>
+        <div class="screenshot-mock">
+          <!-- Replace src with your actual screenshot path -->
+          <!-- <img src="screenshots/wazuh-overview.png" alt="Wazuh Security Events Overview"> -->
+          <div class="screenshot-placeholder">
+            <div class="screenshot-placeholder-icon">📸</div>
+            <div class="screenshot-placeholder-text">
+              wazuh-overview.png<br>
+              <span style="color:#374151;font-size:9px;">replace img tag above with screenshot</span>
+            </div>
+          </div>
+        </div>
+        <div class="screenshot-meta">
+          <div class="screenshot-title">Security Events Overview</div>
+          <div class="screenshot-desc">Wazuh dashboard main view — alert volume over time, severity distribution, top agents, and MITRE ATT&CK coverage heatmap.</div>
+        </div>
+      </div>
+
+      <div class="screenshot-card">
+        <div class="screenshot-header">
+          <span>[ WAZUH // MITRE_ATTCK_MAPPING ]</span>
+          <span class="screenshot-badge">IMG-002</span>
+        </div>
+        <div class="screenshot-mock">
+          <!-- <img src="screenshots/mitre-heatmap.png" alt="MITRE ATT&CK Heatmap"> -->
+          <div class="screenshot-placeholder">
+            <div class="screenshot-placeholder-icon">📸</div>
+            <div class="screenshot-placeholder-text">
+              mitre-heatmap.png<br>
+              <span style="color:#374151;font-size:9px;">replace img tag above with screenshot</span>
+            </div>
+          </div>
+        </div>
+        <div class="screenshot-meta">
+          <div class="screenshot-title">MITRE ATT&CK Heatmap</div>
+          <div class="screenshot-desc">Wazuh's built-in ATT&CK navigator overlay — shows which techniques and sub-techniques have triggered alerts across monitored endpoints.</div>
+        </div>
+      </div>
+
+      <div class="screenshot-card">
+        <div class="screenshot-header">
+          <span>[ SURICATA // NETWORK_ALERT_FEED ]</span>
+          <span class="screenshot-badge">IMG-003</span>
+        </div>
+        <div class="screenshot-mock">
+          <!-- <img src="screenshots/suricata-alerts.png" alt="Suricata Alert Feed"> -->
+          <div class="screenshot-placeholder">
+            <div class="screenshot-placeholder-icon">📸</div>
+            <div class="screenshot-placeholder-text">
+              suricata-alerts.png<br>
+              <span style="color:#374151;font-size:9px;">replace img tag above with screenshot</span>
+            </div>
+          </div>
+        </div>
+        <div class="screenshot-meta">
+          <div class="screenshot-title">Suricata Alert Feed</div>
+          <div class="screenshot-desc">Real-time network IDS alert stream — rule signatures, source/destination IPs, protocol, and severity for traffic flagged against the Emerging Threats ruleset.</div>
+        </div>
+      </div>
+
+      <div class="screenshot-card">
+        <div class="screenshot-header">
+          <span>[ OPENSEARCH // ALERT_INDEX_EXPLORER ]</span>
+          <span class="screenshot-badge">IMG-004</span>
+        </div>
+        <div class="screenshot-mock">
+          <!-- <img src="screenshots/opensearch-discover.png" alt="OpenSearch Discover"> -->
+          <div class="screenshot-placeholder">
+            <div class="screenshot-placeholder-icon">📸</div>
+            <div class="screenshot-placeholder-text">
+              opensearch-discover.png<br>
+              <span style="color:#374151;font-size:9px;">replace img tag above with screenshot</span>
+            </div>
+          </div>
+        </div>
+        <div class="screenshot-meta">
+          <div class="screenshot-title">OpenSearch Index Explorer</div>
+          <div class="screenshot-desc">Discover view of the wazuh-alerts index — raw JSON documents, field filtering, KQL queries, and time-range drill-down on 600+ indexed alert documents.</div>
+        </div>
+      </div>
+
+      <div class="screenshot-card">
+        <div class="screenshot-header">
+          <span>[ WAZUH // AGENT_STATUS_PANEL ]</span>
+          <span class="screenshot-badge">IMG-005</span>
+        </div>
+        <div class="screenshot-mock">
+          <!-- <img src="screenshots/agent-status.png" alt="Wazuh Agent Status"> -->
+          <div class="screenshot-placeholder">
+            <div class="screenshot-placeholder-icon">📸</div>
+            <div class="screenshot-placeholder-text">
+              agent-status.png<br>
+              <span style="color:#374151;font-size:9px;">replace img tag above with screenshot</span>
+            </div>
+          </div>
+        </div>
+        <div class="screenshot-meta">
+          <div class="screenshot-title">Agent Status Panel</div>
+          <div class="screenshot-desc">Wazuh agent management view showing ThinkPad T14 connection status, last keepalive, OS version, agent version, and active policy groups.</div>
+        </div>
+      </div>
+
+      <div class="screenshot-card">
+        <div class="screenshot-header">
+          <span>[ TELEGRAM // ALERT_NOTIFICATION ]</span>
+          <span class="screenshot-badge">IMG-006</span>
+        </div>
+        <div class="screenshot-mock">
+          <!-- <img src="screenshots/telegram-alert.png" alt="Telegram Alert"> -->
+          <div class="screenshot-placeholder">
+            <div class="screenshot-placeholder-icon">📸</div>
+            <div class="screenshot-placeholder-text">
+              telegram-alert.png<br>
+              <span style="color:#374151;font-size:9px;">replace img tag above with screenshot</span>
+            </div>
+          </div>
+        </div>
+        <div class="screenshot-meta">
+          <div class="screenshot-title">Telegram Alert Notification</div>
+          <div class="screenshot-desc">Push notification sample from the Python alert engine — severity level, rule ID, source IP, MITRE technique, and VirusTotal reputation score delivered in real time.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="upload-notice fade-up">
+      <span class="notice-tag">HOW TO ADD SCREENSHOTS</span>
+      <span>Create a <code style="font-family:var(--font-mono);font-size:10px;background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.2);color:var(--orange);padding:1px 5px;">screenshots/</code> folder in your project root · drop PNGs in · uncomment the <code style="font-family:var(--font-mono);font-size:10px;background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);color:var(--cyan);padding:1px 5px;">&lt;img&gt;</code> tags inside each card above</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ FOOTER ════════════ -->
+<footer>
+  <div class="footer-inner">
+    <a href="#" class="footer-logo">
+      <span class="bracket">[</span> SOC_HOME_LAB <span class="bracket">]</span>
+    </a>
+    <ul class="footer-links">
+      <li><a href="https://github.com/kat2120/SOCHomeLab" target="_blank">GitHub</a></li>
+      <li><a href="infrastructure-guide.html">Infra Guide</a></li>
+      <li><a href="detection-guide.html">Detection Guide</a></li>
+    </ul>
+    <div class="footer-copy">Built by Kathlyn &amp; Richard · Fedora 42 · Wazuh 4.9</div>
+  </div>
+</footer>
+
+<script>
+// ── Scroll reveal ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 60);
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// ── Copy button toggle ──
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const block = btn.closest('.code-block');
+    const text  = block?.querySelector('.code-content')?.innerText ?? '';
+    navigator.clipboard.writeText(text).catch(() => {});
+    btn.classList.add('copied');
+    btn.querySelector('.copy-label').textContent = 'COPIED';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.querySelector('.copy-label').textContent = 'COPY';
+    }, 2000);
+  });
+});
+
+// ── Status bar live clock ──
+(function () {
+  const el = document.createElement('div');
+  el.className = 'status-item';
+  el.innerHTML = '<span class="key">SYS_TIME:</span><span class="val" id="sys-time"></span>';
+  document.querySelector('.status-bar-right')?.appendChild(el);
+
+  function tick() {
+    const now = new Date();
+    document.getElementById('sys-time').textContent =
+      now.toLocaleTimeString('en-CA', { hour12: false });
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
+
+</body>
+</html>
 
