@@ -12,7 +12,7 @@ import subprocess
 import os
 from datetime import datetime
 
-TARGET_IP   = "192.168.1.33"
+TARGET_IP   = "[Your Server IP Address]"
 DELAY       = 0.5
 
 def log(severity, label, message):
