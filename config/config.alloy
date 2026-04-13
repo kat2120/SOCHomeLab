@@ -1,7 +1,7 @@
 // ── Loki destination ──────────────────────────────────────────────────
 loki.write "local_loki" {
   endpoint {
-    url = "http://localhost:3100/loki/api/v1/push"
+    url = "http://localhost:[Loki Port (Default Port: 3100)]/loki/api/v1/push"
   }
 }
 
