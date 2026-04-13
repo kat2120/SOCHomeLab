@@ -12,7 +12,7 @@ import requests
 import json
 from datetime import datetime, timezone
 
-LOKI_URL = "http://192.168.1.33:3100"
+LOKI_URL = "http://[your server IP Address]:[Loki Port (default port:3100)]"
 LOOKBACK = 24 * 60 * 60   # 24 hours in seconds
 
 SEVERITY_MAP = {
