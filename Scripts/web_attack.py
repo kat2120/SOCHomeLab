@@ -10,7 +10,7 @@ import time
 from datetime import datetime
 
 TARGET_IP   = "[Your Server IP Address]"   # any HTTP server on your network
-TARGET_PORT = 9090
+TARGET_PORT = [http port (default: 80)]
 DELAY       = 0.5
 
 # Payloads that match Suricata's ET ruleset signatures
