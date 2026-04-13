@@ -18,16 +18,24 @@ The environment consists of a centralized management node and distributed endpoi
 - **Monitored Endpoint (ThinkPad T14):** Fedora 42 workstation running the Wazuh Agent for real-time telemetry [cite: 1, 2].
 - **Alert Engine:** Custom Python engine tailing JSON logs, performing VirusTotal IP reputation lookups, and routing critical alerts to Telegram [cite: 1].
 
-## 🛠️ The Tech Stack
+## ⚙️ Tech Stack
 
-| Component | Technology | Role |
-| :--- | :--- | :--- |
-| **HIDS / SIEM** | Wazuh 4.9 | Host intrusion detection, file integrity monitoring, and MITRE mapping [cite: 1, 2]. |
-| **NIDS** | Suricata | Network-based detection using Emerging Threats community rules [cite: 1]. |
-| **Search Engine** | OpenSearch | High-performance indexing and storage of all security events [cite: 1, 2]. |
-| **Data Shipper** | Filebeat | Securely ships logs from the manager to the indexer via SSL [cite: 1, 2]. |
-| **Automation** | Python | Custom alert enrichment and notification routing [cite: 1]. |
-| **OS** | Fedora 42 | Hardened base operating system with SSH/Firewall hardening [cite: 1, 2]. |
+| Tool | Version | Purpose | Status |
+|------|---------|---------|--------|
+| **Fedora Linux** | 42 | Base OS on Intel NUC | ✅ Done |
+| **Wazuh** | 4.9.2 | HIDS — host intrusion detection + SIEM | ✅ Done |
+| **Suricata** | Latest | NIDS — network intrusion detection | ✅ Done |
+| **Grafana** | Latest | Unified log visualization dashboard | ✅ Done |
+| **Loki** | Latest | Log aggregation and storage | ✅ Done |
+| **Promtail** | Latest | Log shipping agent | ✅ Done |
+| **Python 3** | 3.10+ | Alert parsing and automation engine | ✅ Done |
+| **Telegram Bot API** | — | Real-time push notifications | ✅ Done |
+| **OpenSearch** | 2.19.4 | Alert indexing and search (via Wazuh) | ✅ Done |
+| **Filebeat** | 7.10.2 | Ships Wazuh alerts to OpenSearch | ✅ Done |
+| **firewalld** | — | Host firewall on Fedora | ✅ Done |
+
+**Total project cost: $0** — every tool is free and open source.
+
 
 ## 🚀 Key Features
 
