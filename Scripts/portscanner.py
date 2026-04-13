@@ -10,9 +10,9 @@ import sys
 import threading
 from datetime import datetime
 
-TARGET = "192.168.1.33"        # change to a host on your network
+TARGET = "[Your Server IP Address]"        # change to a host on your network
 START_PORT = 1
-END_PORT = 1024
+END_PORT = 9999
 TIMEOUT = 0.5
 THREADS = 50
 
