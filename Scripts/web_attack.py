@@ -9,7 +9,7 @@ import socket
 import time
 from datetime import datetime
 
-TARGET_IP   = "192.168.1.33"   # any HTTP server on your network
+TARGET_IP   = "[Your Server IP Address]"   # any HTTP server on your network
 TARGET_PORT = 9090
 DELAY       = 0.5
 
