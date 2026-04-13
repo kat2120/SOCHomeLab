@@ -1,0 +1,85 @@
+// ── Loki destination ──────────────────────────────────────────────────
+loki.write "local_loki" {
+  endpoint {
+    url = "http://localhost:3100/loki/api/v1/push"
+  }
+}
+
+
+// ── SOURCE 1: Suricata IDS ────────────────────────────────────────────
+local.file_match "suricata_files" {
+  path_targets = [{
+    __path__ = "/var/log/suricata/eve.json",
+    job      = "suricata",
+    source   = "suricata-ids",
+  }]
+}
+
+loki.source.file "suricata" {
+  targets    = local.file_match.suricata_files.targets
+  forward_to = [loki.process.suricata_parse.receiver]
+}
+
+loki.process "suricata_parse" {
+  // Parse each line as JSON and promote key fields as labels
+  stage.json {
+    expressions = {
+      event_type = "event_type",
+      severity   = "alert.severity",
+      src_ip     = "src_ip",
+      dest_ip    = "dest_ip",
+    }
+  }
+  stage.labels {
+    values = {
+      event_type = "event_type",
+      severity   = "severity",
+    }
+  }
+  forward_to = [loki.write.local_loki.receiver]
+}
+
+// ── SOURCE 2: Wazuh HIDS ──────────────────────────────────────────────
+local.file_match "wazuh_files" {
+  path_targets = [{
+    __path__ = "/var/ossec/logs/alerts/alerts.json",
+    job      = "wazuh",
+    source   = "wazuh-hids",
+  }]
+}
+
+loki.source.file "wazuh" {
+  targets    = local.file_match.wazuh_files.targets
+  forward_to = [loki.process.wazuh_parse.receiver]
+}
+
+loki.process "wazuh_parse" {
+  stage.json {
+    expressions = {
+      rule_level = "rule.level",
+      rule_desc  = "rule.description",
+      agent      = "agent.name",
+    }
+  }
+sudo nano /etc/alloy/config.alloy  stage.labels {
+    values = {
+      rule_level = "rule_level",
+      agent      = "agent",
+    }
+  }
+  forward_to = [loki.write.local_loki.receiver]
+}
+
+// ── SOURCE 3: Python engine ───────────────────────────────────────────
+local.file_match "python_files" {
+  path_targets = [{
+    __path__ = "/var/log/suricata-telegram/forwarder.log",
+    job      = "python-engine",
+    source   = "python-alerts",
+  }]
+}
+
+loki.source.file "python_engine" {
+  targets    = local.file_match.python_files.targets
+  forward_to = [loki.write.local_loki.receiver]
+}
