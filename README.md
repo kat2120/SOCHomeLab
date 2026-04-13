@@ -27,7 +27,6 @@ The environment consists of a centralized management node and distributed endpoi
 | **Suricata** | Latest | NIDS — network intrusion detection | ✅ Done |
 | **Grafana** | Latest | Unified log visualization dashboard | ✅ Done |
 | **Loki** | Latest | Log aggregation and storage | ✅ Done |
-| **Promtail** | Latest | Log shipping agent | ✅ Done |
 | **Python 3** | 3.10+ | Alert parsing and automation engine | ✅ Done |
 | **Telegram Bot API** | — | Real-time push notifications | ✅ Done |
 | **OpenSearch** | 2.19.4 | Alert indexing and search (via Wazuh) | ✅ Done |
