@@ -1,4 +1,4 @@
-# SOCHomeLab: Industrial Network Security Operations Center
+# SOCHomeLab
 
 ![Fedora](https://img.shields.io/badge/OS-Fedora%2042-blue?logo=fedora)
 ![Wazuh](https://img.shields.io/badge/SIEM-Wazuh%204.9-blue)
@@ -48,4 +48,4 @@ Detailed step-by-step guides are available in the repository:
 - **Field Mapping:** Resolved OpenSearch `illegal_argument_exception` errors by implementing custom index templates for correct data typing [cite: 1].
 
 ---
-Built by **Kathlyn** & **Richard** | British Columbia Institute of Technology (BCIT) [cite: 1, 2
+Built by **Kathlyn** & **Richard** | British Columbia Institute of Technology (BCIT) [cite: 1, 2]
