@@ -10,8 +10,8 @@ import socket
 import time
 from datetime import datetime
 
-TARGET_IP   = "192.168.1.33"    # point at your own server to trigger Wazuh
-TARGET_PORT = 7389		# ssh target port
+TARGET_IP   = "[Your Server IP Address]"    # point at your own server to trigger Wazuh
+TARGET_PORT = 22		        # ssh target port
 ATTEMPTS    = 30              # Wazuh triggers at 8+ failures in 2 minutes
 DELAY       = 0.3             # seconds between attempts
 
