@@ -37,7 +37,9 @@ The environment consists of a centralized management node and distributed endpoi
 **Total project cost: $0** — every tool is free and open source.
 
 ## 📖 Documentation
- 
+
+Visit our webpage for the full guide: https://kat2120.github.io/SOCHomeLab/index.html#dashboard
+
 Full step-by-step field manuals are available in `/docs`:
  
 | Guide | Author | Coverage |
