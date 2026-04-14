@@ -38,7 +38,7 @@ The environment consists of a centralized management node and distributed endpoi
 
 ## 📖 Documentation
 
-Visit our webpage for the full guide: https://kat2120.github.io/SOCHomeLab/index.html#dashboard
+Visit our webpage for the full guide: https://kat2120.github.io/SOCHomeLab/index.html
 
 Full step-by-step field manuals are available in `/docs`:
  
