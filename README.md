@@ -48,4 +48,4 @@ Full step-by-step field manuals are available in `/docs`:
 | [Detection Guide](docs/detection-guide.html) | Richard | Suricata, custom rules, Python engine, VirusTotal, Telegram |
 
 ---
-Built by **Kathlyn** & **Richard**
+Built by Kathlyn & Richard
