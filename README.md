@@ -19,21 +19,22 @@ The environment consists of a centralized management node and distributed endpoi
 - **Alert Engine:** Custom Python engine tailing JSON logs, performing VirusTotal IP reputation lookups, and routing critical alerts to Telegram.
 
 ## ⚙️ Tech Stack
-
+ 
 | Tool | Version | Purpose | Status |
 |------|---------|---------|--------|
-| **Fedora Linux** | 42 | Base OS on Intel NUC | ✅ Done |
+| **Fedora Linux** | 42 | Base OS — Intel NUC and ThinkPad T14 | ✅ Done |
 | **Wazuh** | 4.9.2 | HIDS — host intrusion detection + SIEM | ✅ Done |
 | **Suricata** | Latest | NIDS — network intrusion detection | ✅ Done |
-| **Grafana** | Latest | Unified log visualization dashboard | ✅ Done |
-| **Loki** | Latest | Log aggregation and storage | ✅ Done |
-| **Python 3** | 3.10+ | Alert parsing and automation engine | ✅ Done |
-| **Telegram Bot API** | — | Real-time push notifications | ✅ Done |
 | **OpenSearch** | 2.19.4 | Alert indexing and search (via Wazuh) | ✅ Done |
 | **Filebeat** | 7.10.2 | Ships Wazuh alerts to OpenSearch | ✅ Done |
+| **Loki** | Latest | Log aggregation and storage | ✅ Done |
+| **Grafana** | Latest | Unified log visualization dashboard | ✅ Done |
+| **Grafana Alloy** | Latest | Log shipper (replaces Promtail in Loki v3) | ✅ Done |
+| **Python 3** | 3.10+ | Alert parsing and automation engine | ✅ Done |
+| **Telegram Bot API** | — | Real-time push notifications | ✅ Done |
 | **firewalld** | — | Host firewall on Fedora | ✅ Done |
-
-**Total project cost: $0** — every tool is free and open source.
+ 
+> **Total project cost: $0** — every tool is free and open source.
 
 ## 📖 Documentation
  
