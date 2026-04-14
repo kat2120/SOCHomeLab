@@ -35,10 +35,14 @@ The environment consists of a centralized management node and distributed endpoi
 
 **Total project cost: $0** — every tool is free and open source.
 
-## 📖 Project Documentation
-
-Detailed step-by-step guides are available in the repository:
-
+## 📖 Documentation
+ 
+Full step-by-step field manuals are available in `/docs`:
+ 
+| Guide | Author | Coverage |
+|-------|--------|----------|
+| [Infrastructure Guide](docs/infrastructure-guide.html) | Kathlyn | Fedora setup, Wazuh stack, SSL certs, Filebeat, health checks |
+| [Detection Guide](docs/detection-guide.html) | Richard | Suricata, custom rules, Python engine, VirusTotal, Telegram |
 
 ---
 Built by **Kathlyn** & **Richard**
