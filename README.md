@@ -34,7 +34,7 @@ The environment consists of a centralized management node and distributed endpoi
 | **Telegram Bot API** | — | Real-time push notifications | ✅ Done |
 | **firewalld** | — | Host firewall on Fedora | ✅ Done |
  
-> **Total project cost: $0** — every tool is free and open source.
+**Total project cost: $0** — every tool is free and open source.
 
 ## 📖 Documentation
  
