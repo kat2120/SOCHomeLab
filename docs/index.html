@@ -6,6 +6,7 @@
 <title>SOCHomeLab — Network Security Monitoring</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
 
 :root {
@@ -1462,23 +1463,35 @@ footer {
   right: 20px;
   width: 40px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: var(--white);
-  font-size: 24px;
+  
+  /* Semi-transparent background (0.4 = 40% opacity) */
+  background-color: rgba(6, 7, 9, 0.4); 
+  
+  /* Solid border and text for visibility */
+  color: var(--orange); 
+  border: 2px solid var(--orange);
+  
+  /* Square shape */
+  border-radius: 0; 
+  
+  /* Centering the X */
+  font-size: 28px;
+  font-family: 'JetBrains Mono', monospace;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
+  
+  /* Smooth transitions */
   transition: all 0.2s ease;
-  font-family: monospace;
+  z-index: 1001;
 }
 
 .lightbox-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: var(--orange);
-  color: var(--orange);
+  /* Becomes more opaque on hover */
+  background-color: var(--orange);
+  color: var(--void);
+  transform: scale(1.05);
 }
 
 .clickable-img {
@@ -1489,6 +1502,44 @@ footer {
 .clickable-img:hover {
   opacity: 0.85;
 }
+
+.team-links a i {
+  margin-right: 6px; /* Space between icon and text */
+  font-size: 0.9rem;  /* Slightly larger than the text for clarity */
+  vertical-align: middle;
+}
+
+.team-links a {
+  display: inline-flex;
+  align-items: center;
+  color: var(--cyan);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+}
+
+.team-links a:hover {
+  color: var(--orange);
+}
+
+.team-links .separator {
+  margin: 0 12px;
+  color: var(--border-hard);
+  opacity: 0.5;
+}
+
+/* Targets links only inside Richard's card */
+.team-card.detect .team-links a {
+  color: var(--orange);
+}
+
+/* Optional: change the hover behavior for Richard's links */
+.team-card.detect .team-links a:hover {
+  color: #ffffff; /* Glows white on hover */
+  border-bottom-color: #ffffff;
+}
+
 </style>
 </head>
 <body>
@@ -1901,7 +1952,6 @@ footer {
   </div>
 </section>
 
-<!-- ════════════ TEAM ════════════ -->
 <section id="team">
   <div class="container">
     <div class="fade-up">
@@ -1917,6 +1967,13 @@ footer {
           <div class="team-role">Operator</div>
           <div class="team-name">Kathlyn</div>
           <div class="team-handle">@kat2120 · Infrastructure & Operations</div>
+          
+          <div class="team-links">
+            <a href="https://github.com/kat2120" target="_blank"><i class="fa-brands fa-github"></i> GITHUB</a>
+            <span class="separator">//</span>
+            <a href="https://www.linkedin.com/in/kathlynh/" target="_blank"><i class="fa-brands fa-linkedin"></i> LINKEDIN</a>
+          </div>
+
           <ul class="team-tasks">
             <li>Fedora 42 server setup and system hardening</li>
             <li>Wazuh HIDS — manager, indexer, dashboard</li>
@@ -1934,7 +1991,15 @@ footer {
         <div class="team-card-body">
           <div class="team-role">Operator</div>
           <div class="team-name">Richard</div>
-          <div class="team-handle">@h4tsur0 · Detection & Response</div>
+          <div class="team-handle">Detection & Response</div>
+
+          <div class="team-links">
+            <a href="https://github.com/H4tsur0" target="_blank">
+            <i class="fa-brands fa-github"></i> GITHUB</a>
+            <span class="separator">//</span>
+            <a href="https://www.linkedin.com/in/richard-axel-gunawan-654512339/" target="_blank"><i class="fa-brands fa-linkedin"></i> LINKEDIN</a>
+          </div>
+
           <ul class="team-tasks">
             <li>Suricata IDS installation and performance tuning</li>
             <li>Custom Suricata detection rule authoring</li>
@@ -2121,7 +2186,7 @@ footer {
           <span class="screenshot-badge">IMG-006</span>
         </div>
         <div class="screenshot-mock">
-          <!-- <img src="screenshots/telegram-alert.png" alt="Telegram Alert"> -->
+          <img src="telegram.png" alt="Telegram Alert" class="clickable-img"> -->
         </div>
         <div class="screenshot-meta">
           <div class="screenshot-title">Telegram Alert Notification</div>
