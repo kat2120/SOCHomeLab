@@ -46,3 +46,6 @@ Full step-by-step field manuals are available in `/docs`:
 |-------|--------|----------|
 | [Infrastructure Guide](docs/infrastructure-guide.html) | Kathlyn | Fedora setup, Wazuh stack, SSL certs, Filebeat, health checks |
 | [Detection Guide](docs/detection-guide.html) | Richard | Suricata, custom rules, Python engine, VirusTotal, Telegram |
+
+
+*Credits: Richard & Kathlyn*
